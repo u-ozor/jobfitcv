@@ -45,6 +45,9 @@ data/chunks_backup/
 # Personal career/job-search notes — never commit
 notes/
 
+# Local safety-net backups before any risky cleanup/move operation — never committed
+_backups/
+
 # Personal internal memory/notes not meant for public repo
 memory/
 .claude/

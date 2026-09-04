@@ -49,12 +49,12 @@ Return a JSON array. Each element is one bullet chunk:
   "title": "{title}",
   "organization": "{organization}",
   "date_range": "{date_range}",
-  "group_key": "<snake_case_org_year — e.g. google_2023, qualcomm_2020>",
+  "group_key": "<snake_case_org_year — e.g. acme_2023, globex_2020>",
   "content": "<one bullet: past-tense action verb + specific task + quantifiable outcome if present>",
   "tags": ["<3-6 lowercase kebab-case skill or tool tags>"],
   "keywords": ["<3-8 recruiter-phrasing terms: tool names, role terms, JD language — e.g. 'Python', 'CI/CD', 'Linux administration'>"],
   "priority": <integer 1-10 based on impact and specificity>,
-  "track": <null or one of: "soc", "sysadmin", "backend", "frontend", "security", "devops">
+  "track": <null or one of: "soc", "sysadmin", "backend", "cloud", "it", "ai">
 }}
 </schema>
 
@@ -86,7 +86,7 @@ Return a JSON array. Each element is one bullet chunk:
   "tags": ["<3-6 lowercase kebab-case tags>"],
   "keywords": ["<3-8 recruiter-phrasing terms: tool names, role terms, JD language — e.g. 'Docker', 'REST API', 'security monitoring'>"],
   "priority": <integer 1-10>,
-  "track": <null or "soc" | "sysadmin" | "backend" | "frontend" | "security" | "devops">,
+  "track": <null or "soc" | "sysadmin" | "backend" | "cloud" | "it" | "ai">,
   "links": {links_json}
 }}
 </schema>
@@ -114,7 +114,7 @@ Return a JSON array with exactly ONE element:
   "tags": ["<5-8 skill tags>"],
   "keywords": ["<5-10 recruiter-phrasing terms: role titles, tool names, domain terms a JD would use>"],
   "priority": <integer 1-10>,
-  "track": <null or "soc" | "sysadmin" | "backend" | "frontend" | "security" | "devops">
+  "track": <null or "soc" | "sysadmin" | "backend" | "cloud" | "it" | "ai">
 }}
 </schema>
 
@@ -142,7 +142,7 @@ Return a JSON array with exactly ONE element:
   "display_group": "<one of the valid display groups listed above — exact spelling>",
   "soft_skill": false,
   "priority": <integer 1-10>,
-  "track": <null or "soc" | "sysadmin" | "backend" | "frontend" | "security" | "devops">
+  "track": <null or "soc" | "sysadmin" | "backend" | "cloud" | "it" | "ai">
 }}}}
 </schema>
 

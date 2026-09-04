@@ -12,6 +12,6 @@ Chrome MV3 extension — one HTML page per feature, each with its own JS file. N
 | `chunk_review.html` / `chunk_review.js` | Full-tab chunk review UI — tier/category views, drag reorder, Assess Fit, Apply Selection. |
 | `rewrite.html` / `rewrite.js` | Full-tab rewrite review UI — before/after diffs, accept/reject, history. |
 | `edit.html` / `edit.js` | Full-tab raw markdown editor for manual resume edits. |
-| `theme-picker.js` / `theme.js` | Shared theme-switcher UI + `themes.css` custom-property definitions, used by every page above. |
+| `theme-picker.js` | Shared theme-switcher UI + `themes.css` custom-property definitions, used by every page above. |
 
 **Why no `js/`, `html/`, `css/` subfolders**: Chrome resolves `manifest.json` paths and `<script src>` relative to the extension root — nesting would just add path prefixes for no organizational win at this file count. Grouping by feature (one HTML + one JS per page, named identically) already shows what touches what at a glance; grouping by file type would scatter each feature across three folders instead.

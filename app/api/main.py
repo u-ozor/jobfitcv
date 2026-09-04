@@ -38,7 +38,7 @@ app = FastAPI(title="jobfitcv", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],   # lock down to EC2 domain on deploy
+    allow_origins=["*"],   # lock down to your deployment domain in production
     allow_methods=["*"],
     allow_headers=["*"],
 )

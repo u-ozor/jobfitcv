@@ -1,4 +1,4 @@
-# app/embedder.py
+# app/core/embedder.py
 # embedder = retrieval layer
 # Switched from Ollama HTTP API to sentence-transformers for self-contained deployment.
 # Model: BAAI/bge-base-en-v1.5 — 768-dim, strong retrieval quality, no external service required.

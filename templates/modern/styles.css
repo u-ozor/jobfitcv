@@ -1,0 +1,231 @@
+/* ==========================================================================
+   Resume Document Styling — "modern"
+   - Clean sans-serif, left-aligned header, single accent color
+   - ATS-safe / Playwright PDF-ready (single column, no tables/grids for content)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+@page {
+    size: A4;
+    margin: 0.5in 0.55in;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --accent: #0f6b64;
+    --ink: #16191c;
+    --ink-soft: #4a5054;
+    --rule: #d8dcdd;
+}
+
+body {
+    font-family: "Work Sans", "Helvetica Neue", Arial, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.28;
+    color: var(--ink);
+    background: white;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    text-rendering: geometricPrecision;
+}
+
+.container {
+    width: 100%;
+    max-width: 7.4in;
+    margin: 0 auto;
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+/* Left-aligned, accent-colored name, thin accent rule under contact row     */
+
+header {
+    margin-bottom: 12pt;
+    padding-bottom: 8pt;
+    border-bottom: 2pt solid var(--accent);
+}
+
+header h1 {
+    font-size: 21pt;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin-bottom: 4pt;
+}
+
+.contact {
+    font-size: 9.5pt;
+    color: var(--ink-soft);
+}
+
+.contact a {
+    color: var(--ink-soft);
+    text-decoration: none;
+}
+
+.contact a:hover {
+    text-decoration: underline;
+}
+
+.contact .sep {
+    margin: 0 6pt;
+    color: var(--rule);
+}
+
+/* ── Sections ────────────────────────────────────────────────────────────── */
+
+section {
+    margin-top: 10pt;
+}
+
+section:first-of-type {
+    margin-top: 0;
+}
+
+h2 {
+    display: flex;
+    align-items: center;
+    font-size: 9.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    margin-bottom: 6pt;
+}
+
+h2 span {
+    padding-bottom: 2pt;
+    border-bottom: 1pt solid var(--rule);
+    flex: 1;
+}
+
+/* ── Entry layout ────────────────────────────────────────────────────────── */
+
+.entry {
+    margin-bottom: 6pt;
+}
+
+.entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    width: 100%;
+    gap: 12pt;
+    margin-bottom: 1pt;
+}
+
+.entry-header > div:first-child {
+    flex: 1;
+    min-width: 0;
+}
+
+.entry-title {
+    font-weight: 600;
+    font-size: 10.5pt;
+    color: var(--ink);
+}
+
+.entry-org {
+    font-size: 10pt;
+    color: var(--ink-soft);
+}
+
+.entry-org::before {
+    content: '  —  ';
+    color: var(--rule);
+}
+
+.entry-date {
+    font-size: 9pt;
+    font-weight: 500;
+    color: var(--ink-soft);
+    white-space: nowrap;
+    flex-shrink: 0;
+    text-align: right;
+}
+
+.project-links {
+    font-size: 9pt;
+    margin-top: 1pt;
+}
+
+.project-links a {
+    color: var(--accent);
+}
+
+/* ── Bullet lists ────────────────────────────────────────────────────────── */
+
+ul {
+    margin-top: 2pt;
+    padding-left: 13pt;
+    list-style: none;
+}
+
+li {
+    font-size: 10pt;
+    margin-bottom: 1.5pt;
+    line-height: 1.28;
+    position: relative;
+}
+
+li::before {
+    content: '';
+    position: absolute;
+    left: -11pt;
+    top: 5.5pt;
+    width: 4pt;
+    height: 4pt;
+    border-radius: 50%;
+    background: var(--accent);
+}
+
+/* ── Skills / Achievements label: value rows ─────────────────────────────── */
+
+.skills-block {
+    display: flex;
+    flex-direction: column;
+    gap: 2pt;
+}
+
+.skill-row {
+    display: flex;
+    align-items: baseline;
+    font-size: 10pt;
+    line-height: 1.3;
+    gap: 6pt;
+}
+
+.skill-label {
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.skill-label::after {
+    content: ':';
+}
+
+/* ── Summary ─────────────────────────────────────────────────────────────── */
+
+p.summary {
+    font-size: 10.5pt;
+    line-height: 1.35;
+    color: var(--ink);
+}
+
+/* ── Print ───────────────────────────────────────────────────────────────── */
+
+@media print {
+    .entry-header { break-after: avoid; }
+    h2 { break-after: avoid; }
+    a { color: var(--ink-soft); text-decoration: none; }
+}

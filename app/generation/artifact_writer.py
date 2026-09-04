@@ -1,4 +1,4 @@
-# app/artifact_writer.py
+# app/generation/artifact_writer.py
 
 import os
 import json

@@ -1,4 +1,4 @@
-# app/rewrite_manager.py
+# app/rewrites/manager.py
 
 import os
 import json

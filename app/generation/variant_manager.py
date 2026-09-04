@@ -1,4 +1,4 @@
-# app/variant_manager.py
+# app/generation/variant_manager.py
 
 import os
 import json

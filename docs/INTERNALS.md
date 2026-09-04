@@ -75,7 +75,7 @@ Each feature's `*_PROVIDER`/`*_MODEL` pair defaults to Anthropic and its own pre
 - Embeds the job text, cosine-sims against every `.npy` file in `data/taxonomy/`
 - Picks the highest-scoring file → splits on `_` to get `track` + `focus`
 - Splits the winning filename on the first `_` to derive the short track name: `cloud_devops.npy` → `"cloud"`, `ai_ml.npy` → `"ai"`, `soc_security.npy` → `"soc"`. Summary chunks' `track` field must use these short names.
-- Available tracks: `soc`, `sysadmin`, `backend`, `cloud`, `it_support`, `ai`
+- Available tracks: `soc`, `sysadmin`, `backend`, `cloud`, `it`, `ai` (derived from `.npy` filenames: `soc_security`, `sysadmin_itops`, `backend_api`, `cloud_devops`, `it_support` → `it`, `ai_ml`)
 - Track classification affects TWO things only: (1) which summary chunks are eligible, (2) variant reuse gate (see below)
 
 ---

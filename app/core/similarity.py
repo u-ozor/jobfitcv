@@ -1,4 +1,4 @@
-# app/similarity.py
+# app/core/similarity.py
 
 import numpy as np
 

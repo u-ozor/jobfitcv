@@ -1,4 +1,4 @@
-# app/resume_builder.py
+# app/generation/resume_builder.py
 # normalisation layer
 
 import re

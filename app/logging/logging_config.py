@@ -1,5 +1,5 @@
 
-# app/logging_config.py
+# app/logging/logging_config.py
 
 import logging
 

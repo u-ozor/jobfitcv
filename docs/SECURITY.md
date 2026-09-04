@@ -31,7 +31,7 @@ All sensitive data lives on the local filesystem under `data/` and `outputs/`. E
 | Configured LLM (Anthropic by default) | FastAPI server (`app/api/routers/chunk_review.py`) | Anthropic / OpenAI-compatible / Ollama, per `SUMMARY_SYNTH_PROVIDER` | On "Synthesize Summary" in chunk review, user-initiated | Selected chunk contents + job text for summary proposal |
 | Job page load | Browser (user navigation) | Job site | Normal browsing | Standard HTTP — not extension-initiated |
 
-**The extension itself makes no outbound internet requests.** All extension fetches go to `localhost:8000` only, enforced by `host_permissions: ["http://localhost:8000/*"]` in the manifest.
+**The extension itself makes no outbound internet requests.** All extension fetches go to `localhost` only (port configurable, `8000` by default), enforced by `host_permissions: ["http://localhost:*/*"]` in the manifest.
 
 LLM calls are made by the FastAPI server process (not the browser extension) when the user explicitly triggers the chunk wizard, cover letter generation, or summary synthesis. Each of these three features defaults to Anthropic but is independently configurable — for example, setting `WIZARD_PROVIDER=ollama` routes chunk-wizard calls to a local Ollama instance instead, and no data leaves the machine for that feature. Whichever provider is active, the server reads the matching credential (`ANTHROPIC_API_KEY` / `OPENAI_API_KEY`, or no key at all for Ollama) from `.env` at runtime. These calls send resume content and/or job text — data leaves the machine only when a cloud provider (Anthropic or an OpenAI-compatible endpoint) is configured for that feature; that provider's own data-handling terms then apply.
 
@@ -47,7 +47,7 @@ LLM calls are made by the FastAPI server process (not the browser extension) whe
 | `scripting` | MV3 requirement for tab-level script injection | Used as fallback when declarative injection missed a page open before extension loaded |
 | `sidePanel` | Open the side panel UI | UI rendering only, no data access |
 | `windows` | Open a popup window for URL-based capture (LinkedIn/Indeed) — a background tab gets `visibilityState: 'hidden'` and the page defers rendering the job description, so a visible-but-unfocused popup window is used instead, then closed automatically | Only opened during an explicit user-initiated URL capture; closes itself within ~5–10s |
-| `host_permissions: http://localhost:8000/*` | Allow extension pages to fetch from local API | Localhost only — not reachable from external network |
+| `host_permissions: http://localhost:*/*` | Allow extension pages to fetch from local API, any port | Localhost only — not reachable from external network |
 
 ### Deliberately Not Requested
 
@@ -104,7 +104,7 @@ Greenhouse and Lever clean-mode fill targets only explicitly-known selectors for
 
 **Wrong-field fills** — EEO/demographic field exclusion list in content.js. Generic fill only targets fields with clearly matching labels.
 
-**Duplicate job capture** — URL dedup (query-param-stripped) + text fingerprint (sha256 of first 400 chars) prevent re-ingesting the same job from different boards or sessions.
+**Duplicate job capture** — URL dedup (query-param-stripped) + text fingerprint (sha256 of first 2000 chars) prevent re-ingesting the same job from different boards or sessions.
 
 ### Out of Scope
 
@@ -128,7 +128,7 @@ Greenhouse and Lever clean-mode fill targets only explicitly-known selectors for
 | `activeTab` | Required for form fill and job text extraction. Only active when user initiates an action from the panel. |
 | `scripting` | MV3 requirement. Used as fallback injection when a page was open before the extension loaded. |
 | No remote code execution | No `eval()`, no dynamic script fetches, no CDN dependencies. All JS is bundled in the extension package. |
-| No data exfiltration | `host_permissions` restricts extension fetches to `localhost:8000` only. Verified by manifest. |
+| No data exfiltration | `host_permissions` restricts extension fetches to `localhost` only (any port). Verified by manifest. |
 
 ---
 

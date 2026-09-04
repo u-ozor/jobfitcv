@@ -2,7 +2,7 @@
 
 ## Job Capture
 - Captures any job posting via Chrome extension side panel
-- **URL-based capture** — paste a LinkedIn or Indeed URL directly into the panel URL field (below the Capture button). Background service worker opens a silent background tab (`active: false`), waits for the page to fully load, delays 2 s for SPA rendering, extracts via the pre-injected content script, closes the tab, and returns data to the panel preview. No new extension permissions required — `content_scripts: [{matches: ["<all_urls>"]}]` pre-injects `content.js` into all tabs so messaging works without the `tabs` permission. Manual on-page capture remains the fallback.
+- **URL-based capture** — paste a LinkedIn or Indeed URL directly into the panel URL field (below the Capture button). Background service worker opens a visible-but-unfocused popup window (`chrome.windows.create({focused: false, type: "popup"})`) — a background tab won't work here since `visibilityState: 'hidden'` makes LinkedIn's SPA defer rendering the job description entirely. Polls for content, extracts via the pre-injected content script, closes the popup automatically (~5–10s), and returns data to the panel preview. No new extension permissions required — `content_scripts: [{matches: ["<all_urls>"]}]` pre-injects `content.js` into all tabs so messaging works without the `tabs` permission. Manual on-page capture remains the fallback.
 - Auto-clicks LinkedIn "See more" before extracting text
 - Editable preview before saving — trim noise, correct title
 - **Category select** — Step 2 preview includes a category picker (`Main | PT | Bridge | Other`). Set before confirming ingest; changeable later via tracker or API.

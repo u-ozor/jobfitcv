@@ -2,7 +2,7 @@
 #
 # Rebuilds resume artifacts (HTML/PDF) from the user's hand-edited
 # markdown at edited/resume.edited.md. Unrelated to AI rewrites —
-# see app/rewrite_manager.py for that snapshot/revert system instead.
+# see app/rewrites/manager.py for that snapshot/revert system instead.
 
 from pathlib import Path
 import shutil

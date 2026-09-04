@@ -162,7 +162,7 @@ Builds a self-contained image — embedding model and Chromium are both pre-fetc
 
 - No telemetry, no analytics, no usage tracking
 - All user data stays in `data/` on the local filesystem, gitignored by default
-- Extension communicates only with `localhost:8000` — no internet requests from the extension itself
+- Extension communicates only with `localhost` (port `8000` by default, configurable) — no internet requests from the extension itself
 - Content script is declarative and dormant — only acts on messages from the extension's own service worker
 - Permissions: `activeTab`, `sidePanel`, `scripting`, `windows` (popup-based URL capture only, closes itself automatically)
 - API keys stored in `.env`, gitignored, never logged or transmitted by the extension

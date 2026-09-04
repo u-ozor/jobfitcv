@@ -1,4 +1,4 @@
-# app/matcher.py
+# app/generation/matcher.py
 
 import json
 import numpy as np

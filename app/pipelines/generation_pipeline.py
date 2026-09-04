@@ -147,7 +147,3 @@ def generate_resume_pipeline(
         "artifacts": artifacts,
         "matched_chunks": matched_chunks
     }
-    # return {
-    #     "variant": "silly moan",
-    #     "artifact": "mikemlln"
-    # }

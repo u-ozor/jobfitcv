@@ -384,7 +384,7 @@ ingestBtn.addEventListener("click", () => {
   });
 });
 
-// URL-based capture — opens tab in background, extracts, closes it
+// URL-based capture — opens an unfocused popup window (background tabs don't render LinkedIn's SPA), extracts, closes it
 urlIngestBtn.addEventListener("click", () => captureFromUrl());
 urlInput.addEventListener("keydown", (e) => { if (e.key === "Enter") captureFromUrl(); });
 

@@ -1,4 +1,4 @@
-# app/renderer.py
+# app/generation/renderer.py
 
 import os
 

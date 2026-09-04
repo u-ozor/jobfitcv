@@ -1,4 +1,4 @@
-#app/rewrite_hooks.py
+# app/rewrites/hooks.py
 
 from app.rewrites.summary_rewriter import (
     rewrite_summary

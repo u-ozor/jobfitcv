@@ -1,4 +1,4 @@
-# app/job_summarizer.py
+# app/jobs/summarizer.py
 #
 # Produces the short, keyword-dense structured summary stored as Job.raw_text.
 # This is what every downstream consumer actually uses — chunk scoring

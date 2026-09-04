@@ -191,8 +191,8 @@ Request:
 Response:
 ```json
 {
-  "proposed": "MEng Information Systems Security graduate...",
-  "current": "MEng Information Systems Security graduate with hands-on SOC tooling experience..."
+  "proposed": "Backend engineer with three years shipping distributed systems in Python...",
+  "current": "Backend engineer with three years shipping distributed systems in Python and Go..."
 }
 ```
 
@@ -311,7 +311,7 @@ Change `compute_keyword_score` divisor in `matcher.py` from 4 to 8:
 return min(matches / 8, 1.0)
 ```
 
-At divisor 4, max score reached at 4 matches — too easy to saturate. At 8, a chunk needs 8 matching job keywords to max out, making the keyword component genuinely discriminating. Strong homelab chunks against a relevant SOC JD will still hit 8+ matches easily. Weak chunks like a frontend bullet against a security JD will score proportionally low.
+At divisor 4, max score reached at 4 matches — too easy to saturate. At 8, a chunk needs 8 matching job keywords to max out, making the keyword component genuinely discriminating. A strongly-relevant chunk against a well-matched JD will still hit 8+ matches easily. A weak/off-topic chunk against that same JD will score proportionally low.
 
 ---
 

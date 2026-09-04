@@ -1,4 +1,4 @@
-# app/extract_keywords.py
+# app/generation/extract_keywords.py
 # Canonical keyword extraction used by match_job.py
 
 import re

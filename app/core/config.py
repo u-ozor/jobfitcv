@@ -1,4 +1,4 @@
-#app/config.py
+# app/core/config.py
 # Curated keyword normalization config for job matching.
 # Goal:
 # - preserve valuable short technical terms

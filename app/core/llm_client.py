@@ -1,4 +1,4 @@
-# app/llm_client.py
+# app/core/llm_client.py
 #
 # Provider selection via env vars:
 #   LLM_PROVIDER  = anthropic (default) | openai | ollama

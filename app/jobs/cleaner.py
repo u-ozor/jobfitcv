@@ -1,4 +1,4 @@
-# app/job_cleaner.py
+# app/jobs/cleaner.py
 # Strips nav noise from raw job text captured via browser innerText.
 # Works on LinkedIn and degrades gracefully on other boards.
 

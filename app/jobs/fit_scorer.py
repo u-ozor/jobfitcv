@@ -1,4 +1,4 @@
-# app/job_fit_scorer.py
+# app/jobs/fit_scorer.py
 #
 # Scores a job against the user's declared target role phrases.
 # Independent from track classification — track is a resume-build concern,

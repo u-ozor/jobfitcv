@@ -25,7 +25,7 @@ End-to-end workflow for each feature. Intended for demos, onboarding, and pickin
 5. Click **Confirm** — job is saved to the DB
 
 **What gets set at ingest:**
-- Track classification (`soc`, `sysadmin`, `backend`, `cloud_devops`, `it_support`, `ai`) via taxonomy embeddings
+- Track classification (`soc`, `sysadmin`, `backend`, `cloud`, `it_support`, `ai`) via taxonomy embeddings
 - Role match badge (Strong / Possible / Outside target) — compares cleaned job title against `data/job_targets.json`
 - Duplicate detection: same URL or same text fingerprint returns the existing record
 
@@ -93,7 +93,7 @@ Each job always gets its own independent variant, keyed by job ID — no sharing
 **Where:** "✎ Rewrite Review ↗" in the panel
 
 1. Opens a full-tab review page; checks for a saved pending diff first
-2. If none exists, runs Claude on a copy of the resume → before/after for every changed bullet
+2. If none exists, runs the configured LLM (Anthropic by default, provider-agnostic via `LLM_PROVIDER`/`LLM_MODEL`) on a copy of the resume → before/after for every changed bullet
 3. Each item has a **Recommended / Optional** badge and an approve checkbox
 4. **Apply Approved** — re-renders HTML and markdown from the approved rewrites
 5. Side-by-side comparison mode after apply

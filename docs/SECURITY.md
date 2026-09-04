@@ -26,14 +26,14 @@ All sensitive data lives on the local filesystem under `data/` and `outputs/`. E
 | Call | Source | Destination | When | Content |
 |------|--------|-------------|------|---------|
 | `fetch http://localhost:8000/*` | Extension panel/background | Local FastAPI server | All operations | Job data, profile, experience — stays on machine |
-| Claude API (`api.anthropic.com`) | FastAPI server (`app/api/routers/wizard.py`) | Anthropic | On "Generate" in chunk wizard, user-initiated | Resume chunk descriptions for structured chunk creation |
-| Claude API (`api.anthropic.com`) | FastAPI server (`app/api/routers/cover_letters.py`) | Anthropic | On "Generate Cover Letter" in panel, user-initiated | Job text + resume highlights for cover letter generation |
-| Claude API (`api.anthropic.com`) | FastAPI server (`app/api/routers/chunk_review.py`) | Anthropic | On "Synthesize Summary" in chunk review, user-initiated | Selected chunk contents + job text for summary proposal |
+| Configured LLM (Anthropic by default) | FastAPI server (`app/api/routers/wizard.py`) | Anthropic / OpenAI-compatible / Ollama, per `WIZARD_PROVIDER` | On "Generate" in chunk wizard, user-initiated | Resume chunk descriptions for structured chunk creation |
+| Configured LLM (Anthropic by default) | FastAPI server (`app/api/routers/cover_letters.py`) | Anthropic / OpenAI-compatible / Ollama, per `CL_PROVIDER` | On "Generate Cover Letter" in panel, user-initiated | Job text + resume highlights for cover letter generation |
+| Configured LLM (Anthropic by default) | FastAPI server (`app/api/routers/chunk_review.py`) | Anthropic / OpenAI-compatible / Ollama, per `SUMMARY_SYNTH_PROVIDER` | On "Synthesize Summary" in chunk review, user-initiated | Selected chunk contents + job text for summary proposal |
 | Job page load | Browser (user navigation) | Job site | Normal browsing | Standard HTTP — not extension-initiated |
 
 **The extension itself makes no outbound internet requests.** All extension fetches go to `localhost:8000` only, enforced by `host_permissions: ["http://localhost:8000/*"]` in the manifest.
 
-Claude API calls are made by the FastAPI server process (not the browser extension) when the user explicitly triggers the chunk wizard, cover letter generation, or summary synthesis. The server reads the `ANTHROPIC_API_KEY` from `.env` at runtime. Anthropic's data handling is governed by their API privacy policy. These calls send resume content and/or job text — users should be aware that this data leaves the machine and reaches Anthropic's servers on each Claude-powered action.
+LLM calls are made by the FastAPI server process (not the browser extension) when the user explicitly triggers the chunk wizard, cover letter generation, or summary synthesis. Each of these three features defaults to Anthropic but is independently configurable — for example, setting `WIZARD_PROVIDER=ollama` routes chunk-wizard calls to a local Ollama instance instead, and no data leaves the machine for that feature. Whichever provider is active, the server reads the matching credential (`ANTHROPIC_API_KEY` / `OPENAI_API_KEY`, or no key at all for Ollama) from `.env` at runtime. These calls send resume content and/or job text — data leaves the machine only when a cloud provider (Anthropic or an OpenAI-compatible endpoint) is configured for that feature; that provider's own data-handling terms then apply.
 
 ---
 
@@ -98,7 +98,7 @@ Greenhouse and Lever clean-mode fill targets only explicitly-known selectors for
 
 **Accidental data exposure** — all sensitive files gitignored, never committed. `.env` excluded. `outputs/` excluded.
 
-**Extension over-reach** — minimum viable permissions. No `tabs`, no `history`, no `<all_urls>` host permission.
+**Extension over-reach** — minimum viable permissions. No `tabs`, no `history`, no `<all_urls>` in `host_permissions` (content script injection is a separate, narrower mechanism — see Content Script Scope above).
 
 **Credential exposure** — API key read from env at runtime, never logged, never transmitted by the extension, never written to DB.
 

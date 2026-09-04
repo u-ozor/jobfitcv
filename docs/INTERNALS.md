@@ -130,20 +130,11 @@ Within each type, top N by score are taken. `GROUP_CAP = 3` — max bullets from
 
 ## Summary chunk selection
 
-There are 6 summary chunks:
-| ID | Track | Priority | Notes |
-|----|-------|----------|-------|
-| sum_001 | None | 7 | Stale — "software engineer + frontend" framing, predates security focus. Consider `active:false`. |
-| sum_002 | sysadmin | 10 | AD/SIEM/infra focused |
-| sum_003 | soc | 10 | SOC tooling, MITRE ATT&CK, Wazuh, threat detection |
-| sum_004 | None | 10 | Broad — infra + security + software + AI (current general fallback) |
-| sum_005 | cloud | 10 | Cloud/DevSecOps focused |
-| sum_006 | ai | 10 | AI/ML engineering focused |
+Each summary chunk has a `track` field (or `None` for universal) and a `priority`. At generation time, `filter_summaries_by_track()` keeps only chunks whose track matches the job's classified track plus any universal ones, then the scorer ranks among the survivors exactly like any other chunk type — cosine similarity dominant, priority a secondary boost, quota capped at 1.
 
-**Why sum_004 wins most of the time:**
-sum_004's embedding sits at the centroid of infra + security + engineering language. Generalist postings hit all three, so sum_004 consistently outscores track-specific summaries in cosine similarity (e.g. 0.7714 vs sum_003's 0.7081 against a cybersecurity engineer job).
+**A broad/universal summary tends to beat track-specific ones on generalist postings.** A summary chunk written to span several adjacent tracks sits closer to the embedding centroid of postings that touch on all of them, so it can consistently outscore a narrowly-focused track-specific summary in cosine similarity — even when the track-specific one is the better narrative fit. Priority alone usually can't close that gap, since every chunk shares the same max priority ceiling. A track-specific summary only pulls ahead on a posting that's heavily specialized in that track's language.
 
-To make a track-specific summary win: either give it a meaningfully higher priority (current max is 10, same as sum_004) or restructure the scorer to hard-prefer track-matched summaries.
+To make a track-specific summary win more often: give it a meaningfully higher priority relative to the universal fallback, or restructure the scorer to hard-prefer track-matched summaries over universal ones regardless of raw similarity.
 
 ---
 
@@ -180,8 +171,8 @@ outputs/resumes/{job_id}/
 
 ## Known gaps / quirks
 
-- **sum_001 stale** — "software engineer + frontend" framing predates current security focus. Recommend setting `active:false` in wizard.
-- **sum_004 dominates for generic JDs** — broad infra+security embedding sits close to the centroid of most postings. Track-specific summaries win when the JD is heavily specialized.
+- **Review summary chunks periodically for staleness** — a summary's framing can predate your current focus as target roles shift; if one no longer represents you, set `active:false` in the wizard rather than leaving it to compete in scoring.
+- **A universal summary chunk tends to dominate for generic JDs** — see Summary chunk selection above; track-specific summaries only win when the JD is heavily specialized.
 - **Server reload (watchfiles) kills in-progress generation** — uvicorn `--reload` restarts the process when any watched file changes mid-generation. Job status stays `"generating"` in the DB forever. Fix: `UPDATE jobs SET status='ingested' WHERE id='...'` in SQLite, then re-trigger.
 - **Tag keyword overlap limited by job text** — adding tags to chunks only helps if the job posting actually uses those terms. Tags don't affect embedding similarity, only the `0.13 * keyword_score` component.
 - **Near-miss chunks visible in chunk review** — pool floor 0.35 means chunks in the 0.35–0.50 range appear in the Dropped tier and can be manually toggled in.

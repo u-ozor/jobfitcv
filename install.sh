@@ -15,12 +15,12 @@ echo "=== jobfitcv installer ==="
 echo ""
 
 # ── 1. Virtualenv ─────────────────────────────────────────────────────────────
-echo "[1/5] Creating virtualenv (kratos)..."
+echo "[1/6] Creating virtualenv (kratos)..."
 python3 -m venv kratos
 echo "      done."
 
 # ── 2. Dependencies ───────────────────────────────────────────────────────────
-echo "[2/5] Installing dependencies..."
+echo "[2/6] Installing dependencies..."
 kratos/bin/pip install --upgrade pip -q
 kratos/bin/pip install -r requirements.txt -q
 echo "      done."

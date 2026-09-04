@@ -1,0 +1,147 @@
+[
+  {
+    "id": "sum_001",
+    "type": "summary",
+    "track": null,
+    "priority": 10,
+    "active": true,
+    "content": "One to two sentence professional summary. Keep it factual — degree, main domain, strongest 2-3 signal areas. This renders at the top of every resume."
+  },
+  {
+    "id": "sum_002",
+    "type": "summary",
+    "track": "sysadmin",
+    "priority": 10,
+    "active": true,
+    "content": "Sysadmin-voice summary. Lead with your sysadmin credential/degree, then your strongest admin signal (Windows/Linux, AD, M365, helpdesk scale, etc.). Used only when job is classified as sysadmin track."
+  },
+  {
+    "id": "sum_003",
+    "type": "summary",
+    "track": "soc",
+    "priority": 10,
+    "active": true,
+    "content": "SOC/security-voice summary. Lead with security credential, then strongest security signal (SIEM, threat detection, incident response, frameworks like MITRE ATT&CK). Used only when job is classified as soc track."
+  },
+  {
+    "id": "sum_004",
+    "type": "summary",
+    "track": null,
+    "priority": 9,
+    "active": true,
+    "content": "Universal fallback summary covering all tracks briefly. Used when no track-specific summary is a better fit."
+  },
+
+  {
+    "id": "exp_001",
+    "type": "experience",
+    "group_key": "job_company_a",
+    "priority": 10,
+    "active": true,
+    "content": "**Job Title — Company Name** | City, Country | Jan 2023 – Present\n- Strong, metric-driven bullet. Action verb + what you did + result or scale.\n- Second bullet. Keep each to one line if possible.\n- Third bullet only if genuinely distinct from above."
+  },
+  {
+    "id": "exp_002",
+    "type": "experience",
+    "group_key": "job_company_a",
+    "priority": 7,
+    "active": true,
+    "content": "- Additional detail bullet for the same role. Lower priority so it only appears if quota allows. Same group_key as exp_001 so it renders as a continuation bullet, not a separate heading."
+  },
+  {
+    "id": "exp_003",
+    "type": "experience",
+    "group_key": "job_company_b",
+    "priority": 8,
+    "active": true,
+    "content": "**Previous Title — Previous Company** | City, Country | Jun 2021 – Dec 2022\n- Bullet focused on transferable skills relevant to your target roles.\n- Keep bullets honest and specific. Avoid vague verbs like 'assisted' or 'helped'."
+  },
+
+  {
+    "id": "proj_001",
+    "type": "project",
+    "group_key": "project_alpha",
+    "priority": 10,
+    "active": true,
+    "content": "**Project Name** — One sentence on what it is and the tech stack. This is the header bullet, high priority, always shows if the project is selected."
+  },
+  {
+    "id": "proj_002",
+    "type": "project",
+    "group_key": "project_alpha",
+    "priority": 7,
+    "active": true,
+    "content": "- Detail bullet for the same project: specific technical implementation, scale, or outcome. Lower priority — shows only if quota allows. Same group_key as proj_001."
+  },
+  {
+    "id": "proj_003",
+    "type": "project",
+    "group_key": "project_beta",
+    "priority": 9,
+    "active": true,
+    "content": "**Second Project** — What it does, why it matters, stack. Keep the description job-relevant — lead with the signal the project demonstrates (automation, security, devops, etc.)."
+  },
+
+  {
+    "id": "skill_001",
+    "type": "skill",
+    "title": "Programming Languages",
+    "priority": 9,
+    "active": true,
+    "keywords": ["python", "bash", "scripting", "automation"],
+    "content": "Proficient in Python (scripting, automation, data processing) and Bash. Comfortable reading and writing production-quality code."
+  },
+  {
+    "id": "skill_002",
+    "type": "skill",
+    "title": "Windows Administration",
+    "priority": 9,
+    "active": true,
+    "keywords": ["windows-server", "active-directory", "group-policy", "dns", "dhcp"],
+    "content": "Windows Server administration: Active Directory, Group Policy, DNS, DHCP, user lifecycle management."
+  },
+  {
+    "id": "skill_003",
+    "type": "skill",
+    "title": "Linux Administration",
+    "priority": 8,
+    "active": true,
+    "keywords": ["linux", "ubuntu", "debian", "systemd", "ssh"],
+    "content": "Linux system administration: Ubuntu/Debian, package management, cron, systemd, SSH hardening."
+  },
+  {
+    "id": "skill_004",
+    "type": "skill",
+    "title": "Networking",
+    "priority": 8,
+    "active": true,
+    "keywords": ["tcp-ip", "vlan", "dns", "dhcp", "firewall"],
+    "content": "Networking fundamentals: TCP/IP, VLANs, DNS, DHCP, firewall rules. Comfortable reading packet captures."
+  },
+  {
+    "id": "skill_005",
+    "type": "skill",
+    "title": "Cloud Platforms",
+    "priority": 7,
+    "active": true,
+    "keywords": ["aws", "ec2", "s3", "iam", "azure", "m365"],
+    "content": "Cloud: AWS EC2, S3, IAM, VPC. Familiar with Azure fundamentals and M365 administration."
+  },
+
+  {
+    "id": "edu_001",
+    "type": "education",
+    "group_key": "masters",
+    "priority": 10,
+    "active": true,
+    "content": "**MEng / MSc / BSc Degree Title** — University Name | City | Graduated: Year\nRelevant coursework or thesis note if applicable (one line max)."
+  },
+  {
+    "id": "edu_002",
+    "type": "education",
+    "group_key": "cert_comptia",
+    "priority": 8,
+    "active": true,
+    "content": "**CompTIA Security+ / Network+ / A+** — Issued Month Year (or: In progress, expected Month Year)"
+  }
+]

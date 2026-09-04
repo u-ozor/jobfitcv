@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chunk Wizard — jobfitcv</title>
+<style>
+:root {
+  --bg:            #0e0e10;
+  --bg2:           #1a1a1e;
+  --bg3:           #111113;
+  --bg4:           #131316;
+  --border:        #252528;
+  --border2:       #2a2a2e;
+  --border3:       #1e1e22;
+  --text:          #e8e8ec;
+  --text-muted:    #8a8a96;
+  --text-dim:      #52525c;
+  --text-dimmer:   #3e3e48;
+  --accent:        #34d399;
+  --accent-bg:     #0a2a1c;
+  --accent-text:   #0a1a10;
+  --disabled-bg:   #2e2e34;
+  --disabled-text: #52525c;
+  --danger:        #fb7185;
+  --code-text:     #86efac;
+}
+
+body[data-theme="warm"] {
+  --bg:            #f7f3ea;
+  --bg2:           #ece5d0;
+  --bg3:           #f1ead8;
+  --bg4:           #e6dec8;
+  --border:        #c4a87e;
+  --border2:       #d4c098;
+  --border3:       #ddd0b4;
+  --text:          #18110a;
+  --text-muted:    #5e4030;
+  --text-dim:      #7e6050;
+  --text-dimmer:   #a08060;
+  --accent:        #c47c10;
+  --accent-bg:     #fde8cc;
+  --accent-text:   #fff;
+  --disabled-bg:   #d0c8b8;
+  --disabled-text: #a09080;
+  --danger:        #c41230;
+  --code-text:     #7a5030;
+}
+
+body[data-theme="orange"] {
+  --bg:            #1e1508;
+  --bg2:           #2a1c0c;
+  --bg3:           #231208;
+  --bg4:           #261508;
+  --border:        #4a2e10;
+  --border2:       #3c240a;
+  --border3:       #301a08;
+  --text:          #f0e4cc;
+  --text-muted:    #c8a060;
+  --text-dim:      #7a5020;
+  --text-dimmer:   #5a3a10;
+  --accent:        #f97316;
+  --accent-bg:     #260e00;
+  --accent-text:   #fff;
+  --disabled-bg:   #3a2a14;
+  --disabled-text: #7a5832;
+  --danger:        #ef4444;
+  --code-text:     #fdba74;
+}
+
+body[data-theme="blue"] {
+  --bg:            #111c30;
+  --bg2:           #18253e;
+  --bg3:           #121a2e;
+  --bg4:           #141e34;
+  --border:        #2a3e72;
+  --border2:       #213458;
+  --border3:       #1c2c48;
+  --text:          #d0dcf4;
+  --text-muted:    #7890c0;
+  --text-dim:      #405080;
+  --text-dimmer:   #304060;
+  --accent:        #60a5fa;
+  --accent-bg:     #0a1c40;
+  --accent-text:   #fff;
+  --disabled-bg:   #1e2840;
+  --disabled-text: #486090;
+  --danger:        #f87171;
+  --code-text:     #93c5fd;
+}
+
+body[data-theme="pink"] {
+  --bg:            #1c1020;
+  --bg2:           #281828;
+  --bg3:           #22141e;
+  --bg4:           #261622;
+  --border:        #4a2250;
+  --border2:       #3c1a46;
+  --border3:       #32163a;
+  --text:          #f0d8f4;
+  --text-muted:    #c878d0;
+  --text-dim:      #783880;
+  --text-dimmer:   #5a2860;
+  --accent:        #f472b6;
+  --accent-bg:     #2a0838;
+  --accent-text:   #fff;
+  --disabled-bg:   #3a2040;
+  --disabled-text: #7a4880;
+  --danger:        #ef4444;
+  --code-text:     #f9a8d4;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); font-size: 0.88rem; }
+
+.top-bar { background: var(--bg3); border-bottom: 1px solid var(--border3); padding: 12px 24px; display: flex; align-items: center; gap: 16px; }
+.top-bar h1 { font-size: 0.95rem; color: var(--accent); letter-spacing: 0.04em; }
+.top-bar .status-chips { display: flex; gap: 8px; font-size: 0.72rem; color: var(--text-dimmer); flex: 1; }
+.chip { background: var(--bg2); border: 1px solid var(--border); border-radius: 3px; padding: 2px 8px; }
+.chip span { color: var(--accent); }
+
+.layout { display: grid; grid-template-columns: 380px 1fr; height: calc(100vh - 45px); overflow: hidden; }
+
+.form-panel { background: var(--bg3); border-right: 1px solid var(--border3); padding: 20px; overflow-y: auto; }
+
+.type-tabs { display: flex; gap: 4px; margin-bottom: 18px; flex-wrap: wrap; }
+.type-tab { padding: 5px 12px; background: var(--bg2); border: 1px solid var(--border); border-radius: 3px; color: var(--text-dim); cursor: pointer; font-size: 0.78rem; }
+.type-tab.active { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
+
+.form-section { display: none; }
+.form-section.active { display: block; }
+
+label { display: block; font-size: 0.72rem; color: var(--text-muted); margin-top: 12px; margin-bottom: 3px; }
+input[type="text"], input[type="number"], textarea, select {
+  width: 100%; background: var(--bg2); border: 1px solid var(--border2); border-radius: 3px;
+  color: var(--text); padding: 6px 8px; font-size: 0.82rem; font-family: inherit;
+}
+textarea { resize: vertical; line-height: 1.5; }
+select option { background: var(--bg2); }
+
+.priority-row { display: flex; align-items: center; gap: 10px; }
+.priority-row input[type="range"] { flex: 1; accent-color: var(--accent); }
+.priority-val { font-size: 0.8rem; color: var(--accent); min-width: 16px; }
+
+.hint { font-size: 0.68rem; color: var(--text-dimmer); margin-top: 3px; }
+
+.preview-btn {
+  width: 100%; margin-top: 16px; padding: 9px; background: var(--accent); color: var(--accent-text);
+  border: none; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 0.85rem;
+}
+.preview-btn:disabled { background: var(--disabled-bg); color: var(--disabled-text); cursor: default; }
+
+.form-status { margin-top: 8px; font-size: 0.75rem; color: var(--text-muted); min-height: 1.2em; }
+
+.preview-panel { padding: 20px; overflow-y: auto; }
+.preview-panel h2 { font-size: 0.78rem; color: var(--text-dimmer); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 14px; }
+
+.empty-state { color: var(--text-dim); font-size: 0.82rem; margin-top: 60px; text-align: center; }
+
+.chunk-preview { background: var(--bg4); border: 1px solid var(--border); border-radius: 4px; margin-bottom: 12px; overflow: hidden; }
+.chunk-header { background: var(--bg2); padding: 7px 10px; font-size: 0.7rem; color: var(--text-dim); display: flex; justify-content: space-between; border-bottom: 1px solid var(--border3); }
+.chunk-header .chunk-id { color: var(--accent); font-weight: 600; }
+
+.chunk-json {
+  width: 100%; background: var(--bg); border: none; border-radius: 0; color: var(--code-text);
+  font-size: 0.72rem; font-family: 'Menlo', 'Monaco', monospace; padding: 10px;
+  resize: vertical; min-height: 120px; line-height: 1.5;
+}
+
+.approve-bar { margin-top: 16px; display: flex; gap: 8px; align-items: center; }
+.approve-btn {
+  padding: 8px 20px; background: var(--accent); color: var(--accent-text); border: none; border-radius: 4px;
+  font-weight: 600; cursor: pointer; font-size: 0.85rem;
+}
+.approve-btn:disabled { background: var(--disabled-bg); color: var(--disabled-text); cursor: default; }
+.discard-btn {
+  padding: 8px 14px; background: none; border: 1px solid var(--border2); border-radius: 4px;
+  color: var(--text-dim); cursor: pointer; font-size: 0.82rem;
+}
+.discard-btn:hover { border-color: var(--danger); color: var(--danger); }
+.approve-status { font-size: 0.75rem; color: var(--text-muted); }
+
+.success-msg { color: var(--accent); font-size: 0.8rem; }
+.error-msg { color: var(--danger); font-size: 0.8rem; }
+
+.model-badge { font-size: 0.68rem; color: var(--text-dimmer); margin-top: 6px; }
+
+/* ── Mode toggle ── */
+.mode-toggle { display: flex; gap: 4px; margin-left: auto; }
+.mode-btn { padding: 4px 12px; background: var(--bg2); border: 1px solid var(--border); border-radius: 3px; color: var(--text-dim); cursor: pointer; font-size: 0.76rem; }
+.mode-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
+
+/* ── Edit mode: chunk list (left pane) ── */
+.edit-list-panel { background: var(--bg3); border-right: 1px solid var(--border3); overflow-y: auto; display: flex; flex-direction: column; }
+.edit-search { padding: 10px 12px; border-bottom: 1px solid var(--border3); }
+.edit-search input { width: 100%; background: var(--bg2); border: 1px solid var(--border2); border-radius: 3px; color: var(--text); padding: 5px 8px; font-size: 0.8rem; font-family: inherit; }
+.edit-group-label { font-size: 0.66rem; color: var(--text-dimmer); text-transform: uppercase; letter-spacing: 0.08em; padding: 8px 12px 3px; }
+.edit-chunk-row { padding: 6px 12px; cursor: pointer; border-bottom: 1px solid var(--border3); display: flex; align-items: baseline; gap: 8px; }
+.edit-chunk-row:hover { background: var(--bg2); }
+.edit-chunk-row.active-row { background: var(--accent-bg); border-left: 2px solid var(--accent); }
+.edit-chunk-row.inactive-row .edit-chunk-title { text-decoration: line-through; color: var(--text-dim); }
+.edit-chunk-row.inactive-row .edit-chunk-id { opacity: 0.5; }
+.edit-chunk-id { font-size: 0.65rem; color: var(--accent); font-weight: 600; flex-shrink: 0; font-family: monospace; }
+.edit-chunk-title { font-size: 0.78rem; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
+.edit-chunk-pri { font-size: 0.62rem; color: var(--text-dimmer); flex-shrink: 0; }
+.edit-chunk-off { font-size: 0.58rem; color: var(--text-dimmer); border: 1px solid var(--border2); border-radius: 2px; padding: 0 3px; flex-shrink: 0; }
+
+/* ── Edit mode: edit form (right pane) ── */
+.edit-form-panel { padding: 20px; overflow-y: auto; }
+.edit-empty { color: var(--text-dim); font-size: 0.82rem; margin-top: 60px; text-align: center; }
+.edit-form-inner { display: none; }
+.edit-form-inner.active { display: block; }
+.edit-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 16px; }
+.edit-id-badge { font-size: 0.75rem; font-family: monospace; color: var(--accent); background: var(--accent-bg); border: 1px solid var(--accent); border-radius: 3px; padding: 2px 8px; }
+.edit-type-badge { font-size: 0.72rem; color: var(--text-dimmer); background: var(--bg3); border: 1px solid var(--border2); border-radius: 3px; padding: 2px 7px; }
+.edit-save-btn { margin-left: auto; padding: 6px 18px; background: var(--accent); color: var(--accent-text); border: none; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 0.82rem; }
+.edit-save-btn:disabled { background: var(--disabled-bg); color: var(--disabled-text); cursor: default; }
+.edit-status { font-size: 0.74rem; margin-top: 10px; min-height: 1.2em; }
+.edit-notice { font-size: 0.7rem; color: var(--text-dimmer); margin-top: 6px; }
+.ef-active-btn { font-size: 0.72rem; padding: 3px 10px; border-radius: 3px; cursor: pointer; border: 1px solid; background: none; flex-shrink: 0; }
+.ef-active-btn.on  { color: var(--accent); border-color: var(--accent); }
+.ef-active-btn.off { color: var(--text-dimmer); border-color: var(--border2); }
+
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <h1>chunk wizard</h1>
+  <span id="theme-picker" style="display:flex;align-items:center;gap:5px;flex-shrink:0;"></span>
+  <div class="status-chips" id="status-chips">
+    <span class="chip">Loading...</span>
+  </div>
+  <div class="mode-toggle">
+    <button class="mode-btn active" id="mode-create">Create</button>
+    <button class="mode-btn" id="mode-edit">Edit Existing</button>
+  </div>
+</div>
+
+<div class="layout" id="create-layout">
+
+  <!-- LEFT: FORM -->
+  <div class="form-panel">
+    <div class="type-tabs">
+      <button class="type-tab active" data-type="experience">Experience</button>
+      <button class="type-tab" data-type="project">Project</button>
+      <button class="type-tab" data-type="summary">Summary</button>
+      <button class="type-tab" data-type="skill">Skills</button>
+    </div>
+
+    <!-- Experience -->
+    <div class="form-section active" id="form-experience">
+      <label>Job Title *</label>
+      <input type="text" id="exp-title" placeholder="Software Engineer Intern" />
+
+      <label>Employer / Organization *</label>
+      <input type="text" id="exp-org" placeholder="Acme Corp" />
+
+      <label>Period *</label>
+      <input type="text" id="exp-date" placeholder="2020-2023  or  Jan 2022 – Present" />
+
+      <label>Track</label>
+      <select id="exp-track">
+        <option value="auto">Auto-detect</option>
+        <option value="soc">SOC / Security Ops</option>
+        <option value="sysadmin">Sysadmin / IT Ops</option>
+        <option value="backend">Backend / Software Eng</option>
+        <option value="frontend">Frontend</option>
+        <option value="security">Security (general)</option>
+        <option value="devops">DevOps / Infra</option>
+      </select>
+
+      <label>Priority (1–10)</label>
+      <div class="priority-row">
+        <input type="range" id="exp-priority" min="1" max="10" value="7" oninput="document.getElementById('exp-pval').textContent=this.value">
+        <span class="priority-val" id="exp-pval">7</span>
+      </div>
+
+      <label>Description *</label>
+      <textarea id="exp-desc" rows="7" placeholder="Describe your responsibilities and achievements in plain language. Include any numbers, tools, outcomes, or team context you remember. This will be converted into strong resume bullets."></textarea>
+    </div>
+
+    <!-- Project -->
+    <div class="form-section" id="form-project">
+      <label>Project Name *</label>
+      <input type="text" id="proj-title" placeholder="Ext-Analyzer" />
+
+      <label>Organization</label>
+      <input type="text" id="proj-org" placeholder="Personal Project  or  University Name" />
+
+      <label>Period</label>
+      <input type="text" id="proj-date" placeholder="2024-2025" />
+
+      <label>Link(s)</label>
+      <input type="text" id="proj-links" placeholder="https://github.com/you/project" />
+      <div class="hint">Comma-separate multiple links</div>
+
+      <label>Track</label>
+      <select id="proj-track">
+        <option value="auto">Auto-detect</option>
+        <option value="soc">SOC / Security Ops</option>
+        <option value="sysadmin">Sysadmin / IT Ops</option>
+        <option value="backend">Backend / Software Eng</option>
+        <option value="frontend">Frontend</option>
+        <option value="security">Security (general)</option>
+        <option value="devops">DevOps / Infra</option>
+      </select>
+
+      <label>Priority (1–10)</label>
+      <div class="priority-row">
+        <input type="range" id="proj-priority" min="1" max="10" value="7" oninput="document.getElementById('proj-pval').textContent=this.value">
+        <span class="priority-val" id="proj-pval">7</span>
+      </div>
+
+      <label>Description *</label>
+      <textarea id="proj-desc" rows="7" placeholder="What did you build? What technologies? What was the outcome or impact? Include any notable features or techniques."></textarea>
+    </div>
+
+    <!-- Summary -->
+    <div class="form-section" id="form-summary">
+      <label>Track</label>
+      <select id="sum-track">
+        <option value="auto">Universal (no track)</option>
+        <option value="soc">SOC / Security Ops</option>
+        <option value="sysadmin">Sysadmin / IT Ops</option>
+        <option value="backend">Backend / Software Eng</option>
+        <option value="frontend">Frontend</option>
+        <option value="security">Security (general)</option>
+        <option value="devops">DevOps / Infra</option>
+      </select>
+
+      <label>Your Summary (plain language) *</label>
+      <textarea id="sum-desc" rows="8" placeholder="Write who you are, what you've built or done, and what roles you're targeting. Be specific — it'll be polished and tightened. Example: 'I'm a sysadmin with 3 years running Active Directory on Windows Server 2022, self-hosted SIEM on Proxmox, and Python scripting for automation. Targeting IT ops and infrastructure roles.'"></textarea>
+    </div>
+
+    <!-- Skills -->
+    <div class="form-section" id="form-skills">
+      <label>Category *</label>
+      <input type="text" id="skl-title" placeholder="Cloud Platforms  /  Programming Languages  /  Security Tools" />
+
+      <label>Track</label>
+      <select id="skl-track">
+        <option value="auto">Universal (no track)</option>
+        <option value="soc">SOC / Security Ops</option>
+        <option value="sysadmin">Sysadmin / IT Ops</option>
+        <option value="backend">Backend / Software Eng</option>
+        <option value="frontend">Frontend</option>
+        <option value="security">Security (general)</option>
+        <option value="devops">DevOps / Infra</option>
+      </select>
+
+      <label>Priority (1–10)</label>
+      <div class="priority-row">
+        <input type="range" id="skl-priority" min="1" max="10" value="6" oninput="document.getElementById('skl-pval').textContent=this.value">
+        <span class="priority-val" id="skl-pval">6</span>
+      </div>
+
+      <label>Skills *</label>
+      <textarea id="skl-desc" rows="5" placeholder="AWS, GCP, Azure&#10;— or —&#10;Python, Go, Bash, C++"></textarea>
+    </div>
+
+    <button class="preview-btn" id="preview-btn">Preview Chunks</button>
+    <div class="form-status" id="form-status"></div>
+  </div>
+
+  <!-- RIGHT: PREVIEW -->
+  <div class="preview-panel" id="preview-panel">
+    <div class="empty-state" id="empty-state">
+      Fill the form and click Preview Chunks.<br>
+      Generated chunks appear here for review before saving.
+    </div>
+
+    <div id="chunks-area" style="display:none">
+      <h2>Generated Chunks <span id="chunk-count-label" style="color:#555"></span></h2>
+      <div class="model-badge" id="model-badge"></div>
+      <div id="chunks-list" style="margin-top:12px"></div>
+      <div class="approve-bar">
+        <button class="approve-btn" id="approve-btn">Approve &amp; Add to Chunks</button>
+        <button class="discard-btn" id="discard-btn">Discard</button>
+        <span class="approve-status" id="approve-status"></span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- EDIT MODE LAYOUT -->
+<div class="layout" id="edit-layout" style="display:none">
+
+  <!-- Left: chunk list -->
+  <div class="edit-list-panel">
+    <div class="edit-search">
+      <input type="text" id="edit-search" placeholder="Filter chunks…" />
+    </div>
+    <div id="edit-chunk-list">
+      <div style="padding:16px;color:var(--text-dim);font-size:0.8rem">Loading…</div>
+    </div>
+  </div>
+
+  <!-- Right: edit form -->
+  <div class="edit-form-panel">
+    <div class="edit-empty" id="edit-empty">Click a chunk to edit it.</div>
+    <div class="edit-form-inner" id="edit-form-inner">
+      <div class="edit-header">
+        <span class="edit-id-badge" id="ef-id"></span>
+        <span class="edit-type-badge" id="ef-type"></span>
+        <button class="ef-active-btn on" id="ef-active-btn">● Active</button>
+        <button class="edit-save-btn" id="edit-save-btn">Save</button>
+      </div>
+      <div class="edit-status" id="edit-status"></div>
+
+      <label>Title</label>
+      <input type="text" id="ef-title" />
+
+      <label>Organization</label>
+      <input type="text" id="ef-org" />
+
+      <label>Date Range</label>
+      <input type="text" id="ef-date" />
+
+      <div id="ef-dateyears-row" style="display:none">
+        <label>Start / End Year <span style="font-size:0.67rem;color:var(--text-dimmer)">(end year 0 = Present)</span></label>
+        <div style="display:flex;gap:8px;margin-bottom:0">
+          <input type="number" id="ef-start-year" placeholder="e.g. 2023" style="width:50%" />
+          <input type="number" id="ef-end-year" placeholder="0 = present" style="width:50%" />
+        </div>
+        <label style="margin-top:8px">Seq <span style="font-size:0.67rem;color:var(--text-dimmer)">(bullet order within group, 1 = first)</span></label>
+        <input type="number" id="ef-seq" placeholder="leave blank if unused" />
+      </div>
+
+      <label>Group Key</label>
+      <input type="text" id="ef-group" />
+
+      <label>Priority (1–10)</label>
+      <div class="priority-row">
+        <input type="range" id="ef-priority" min="1" max="10" value="7" oninput="document.getElementById('ef-pval').textContent=this.value">
+        <span class="priority-val" id="ef-pval">7</span>
+      </div>
+
+      <label>Track</label>
+      <input type="text" id="ef-track" placeholder="null = universal" />
+
+      <label>Tags <span style="font-size:0.67rem;color:var(--text-dimmer)">(comma-separated)</span></label>
+      <input type="text" id="ef-tags" />
+
+      <div id="ef-keywords-row">
+        <label>Keywords <span style="font-size:0.67rem;color:var(--text-dimmer)">(comma-separated)</span></label>
+        <input type="text" id="ef-keywords" />
+      </div>
+
+      <label>Content</label>
+      <textarea id="ef-content" rows="4" placeholder="Single bullet — past-tense action verb, task, outcome."></textarea>
+
+      <div class="edit-notice">Save updates resume_chunks.json and re-runs embeddings automatically.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Served by the same FastAPI app it talks to — derive from the page's own
+// origin instead of hardcoding a port, so this works on any PORT value.
+const BASE = window.location.origin;
+let currentType = "experience";
+let generatedChunks = [];
+let editingActive   = true;
+
+// ── Theme picker (shared jaa-theme key with all extension pages) ──
+(function () {
+  const THEMES = [
+    { key: "",       label: "Dark",   bg: "#111111", accent: "#22c55e" },
+    { key: "warm",   label: "Warm",   bg: "#faf7f0", accent: "#c94010" },
+    { key: "orange", label: "Orange", bg: "#1e1508", accent: "#f97316" },
+    { key: "blue",   label: "Blue",   bg: "#111c30", accent: "#60a5fa" },
+    { key: "pink",   label: "Pink",   bg: "#1c1020", accent: "#f472b6" },
+  ];
+  const LS_KEY = "jaa-theme";
+  function applyTheme(key) {
+    if (key) document.body.dataset.theme = key;
+    else delete document.body.dataset.theme;
+    localStorage.setItem(LS_KEY, key);
+  }
+  function renderPicker() {
+    const container = document.getElementById("theme-picker");
+    if (!container) return;
+    container.innerHTML = "";
+    const active = localStorage.getItem(LS_KEY) || "";
+    THEMES.forEach(t => {
+      const btn = document.createElement("button");
+      btn.type = "button"; btn.title = t.label;
+      const isActive = t.key === active;
+      btn.style.cssText = [
+        "width:14px","height:14px","border-radius:50%",
+        `background:conic-gradient(${t.accent} 0deg 144deg,${t.bg} 144deg 360deg)`,
+        `border:2px solid ${isActive ? t.accent : "transparent"}`,
+        "cursor:pointer","padding:0","flex-shrink:0","outline:none",
+        `transform:${isActive ? "scale(1.3)" : "scale(1)"}`,
+        "transition:transform 0.12s,border-color 0.12s",
+      ].join(";");
+      btn.addEventListener("click", () => { applyTheme(t.key); renderPicker(); });
+      container.appendChild(btn);
+    });
+  }
+  applyTheme(localStorage.getItem(LS_KEY) || "");
+  renderPicker();
+})();
+
+// Type tabs
+document.querySelectorAll(".type-tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".type-tab").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".form-section").forEach(s => s.classList.remove("active"));
+    tab.classList.add("active");
+    currentType = tab.dataset.type;
+    document.getElementById("form-" + currentType).classList.add("active");
+    resetPreview();
+  });
+});
+
+function resetPreview() {
+  generatedChunks = [];
+  document.getElementById("empty-state").style.display = "";
+  document.getElementById("chunks-area").style.display = "none";
+  document.getElementById("form-status").textContent = "";
+}
+
+function getFormData() {
+  const t = currentType;
+  if (t === "experience") return {
+    type: t,
+    title: document.getElementById("exp-title").value.trim(),
+    organization: document.getElementById("exp-org").value.trim(),
+    date_range: document.getElementById("exp-date").value.trim(),
+    track: document.getElementById("exp-track").value === "auto" ? null : document.getElementById("exp-track").value,
+    priority: parseInt(document.getElementById("exp-priority").value),
+    description: document.getElementById("exp-desc").value.trim(),
+    links: []
+  };
+  if (t === "project") {
+    const rawLinks = document.getElementById("proj-links").value.trim();
+    return {
+      type: t,
+      title: document.getElementById("proj-title").value.trim(),
+      organization: document.getElementById("proj-org").value.trim() || "Personal Project",
+      date_range: document.getElementById("proj-date").value.trim(),
+      track: document.getElementById("proj-track").value === "auto" ? null : document.getElementById("proj-track").value,
+      priority: parseInt(document.getElementById("proj-priority").value),
+      description: document.getElementById("proj-desc").value.trim(),
+      links: rawLinks ? rawLinks.split(",").map(s => s.trim()).filter(Boolean) : []
+    };
+  }
+  if (t === "summary") return {
+    type: t, title: "", organization: "", date_range: "",
+    track: document.getElementById("sum-track").value === "auto" ? null : document.getElementById("sum-track").value,
+    priority: 8,
+    description: document.getElementById("sum-desc").value.trim(),
+    links: []
+  };
+  if (t === "skill") return {
+    type: t,
+    title: document.getElementById("skl-title").value.trim(),
+    organization: "", date_range: "",
+    track: document.getElementById("skl-track").value === "auto" ? null : document.getElementById("skl-track").value,
+    priority: parseInt(document.getElementById("skl-priority").value),
+    description: document.getElementById("skl-desc").value.trim(),
+    links: []
+  };
+}
+
+function validate(data) {
+  if (!data.description) return "Description is required.";
+  if ((currentType === "experience" || currentType === "project") && !data.title) return "Title is required.";
+  if (currentType === "skill" && !data.title) return "Category is required.";
+  return null;
+}
+
+document.getElementById("preview-btn").addEventListener("click", async () => {
+  const data = getFormData();
+  const err = validate(data);
+  if (err) { document.getElementById("form-status").textContent = err; return; }
+
+  const btn = document.getElementById("preview-btn");
+  btn.disabled = true;
+  btn.textContent = "Generating…"; // provider-agnostic since WIZARD_PROVIDER can be anthropic/openai/ollama
+  document.getElementById("form-status").textContent = "";
+  resetPreview();
+
+  try {
+    const res = await fetch(`${BASE}/wizard/preview`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      document.getElementById("form-status").textContent = "Error: " + (result.detail || res.status);
+      return;
+    }
+    generatedChunks = result.chunks;
+    renderChunks(result.chunks, result.model);
+  } catch (e) {
+    document.getElementById("form-status").textContent = "Error: " + e.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Preview Chunks";
+  }
+});
+
+function renderChunks(chunks, model) {
+  document.getElementById("empty-state").style.display = "none";
+  document.getElementById("chunks-area").style.display = "";
+  document.getElementById("chunk-count-label").textContent = `(${chunks.length} bullet${chunks.length !== 1 ? "s" : ""})`;
+  document.getElementById("model-badge").textContent = `Model: ${model}`;
+  document.getElementById("approve-status").textContent = "";
+
+  const list = document.getElementById("chunks-list");
+  list.innerHTML = "";
+
+  chunks.forEach((chunk, i) => {
+    const div = document.createElement("div");
+    div.className = "chunk-preview";
+    div.innerHTML = `
+      <div class="chunk-header">
+        <span class="chunk-id">${chunk.id}</span>
+        <span>${chunk.type} · priority ${chunk.priority}</span>
+      </div>
+      <textarea class="chunk-json" id="chunk-json-${i}" spellcheck="false">${JSON.stringify(chunk, null, 2)}</textarea>
+    `;
+    list.appendChild(div);
+  });
+}
+
+document.getElementById("approve-btn").addEventListener("click", async () => {
+  // Read back from textareas in case user edited
+  const edited = [];
+  let parseError = false;
+  generatedChunks.forEach((_, i) => {
+    try {
+      const ta = document.getElementById(`chunk-json-${i}`);
+      edited.push(JSON.parse(ta.value));
+    } catch (e) {
+      document.getElementById("approve-status").innerHTML = `<span class="error-msg">Invalid JSON in chunk ${i + 1}: ${e.message}</span>`;
+      parseError = true;
+    }
+  });
+  if (parseError) return;
+
+  const btn = document.getElementById("approve-btn");
+  btn.disabled = true;
+  btn.textContent = "Saving…";
+
+  try {
+    const res = await fetch(`${BASE}/wizard/commit`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chunks: edited })
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      document.getElementById("approve-status").innerHTML = `<span class="error-msg">Error: ${result.detail || res.status}</span>`;
+    } else {
+      document.getElementById("approve-status").innerHTML =
+        `<span class="success-msg">✓ Added ${result.added} chunk${result.added !== 1 ? "s" : ""}: ${result.ids.join(", ")}. Total: ${result.total}</span>`;
+      loadStatus();
+      setTimeout(resetPreview, 3000);
+    }
+  } catch (e) {
+    document.getElementById("approve-status").innerHTML = `<span class="error-msg">Error: ${e.message}</span>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Approve & Add to Chunks";
+  }
+});
+
+document.getElementById("discard-btn").addEventListener("click", resetPreview);
+
+// =========================================================
+// Mode toggle — Create vs Edit
+// =========================================================
+
+let appMode = "create";
+let allChunks = [];
+let editingChunk = null;
+
+document.getElementById("mode-create").addEventListener("click", () => setMode("create"));
+document.getElementById("mode-edit").addEventListener("click",   () => setMode("edit"));
+
+document.getElementById("ef-active-btn").addEventListener("click", () => {
+  editingActive = !editingActive;
+  const btn = document.getElementById("ef-active-btn");
+  btn.textContent = editingActive ? "● Active" : "○ Inactive";
+  btn.className   = editingActive ? "ef-active-btn on" : "ef-active-btn off";
+});
+
+function setMode(mode) {
+  appMode = mode;
+  document.getElementById("create-layout").style.display = mode === "create" ? "" : "none";
+  document.getElementById("edit-layout").style.display   = mode === "edit"   ? "" : "none";
+  document.getElementById("mode-create").classList.toggle("active", mode === "create");
+  document.getElementById("mode-edit").classList.toggle("active",   mode === "edit");
+  if (mode === "edit") loadEditChunks();
+}
+
+// =========================================================
+// Edit mode — chunk list
+// =========================================================
+
+async function loadEditChunks() {
+  try {
+    const res  = await fetch(`${BASE}/wizard/chunks`);
+    const data = await res.json();
+    allChunks  = data.chunks;
+    renderEditList(allChunks);
+    // Deeplink: auto-open chunk if ?edit=id in URL
+    const editId = new URLSearchParams(location.search).get("edit");
+    if (editId) {
+      const target = allChunks.find(c => c.id === editId);
+      if (target) loadEditForm(target);
+    }
+  } catch (e) {
+    document.getElementById("edit-chunk-list").innerHTML =
+      `<div style="padding:12px;color:var(--danger);font-size:0.8rem">Error: ${e.message}</div>`;
+  }
+}
+
+document.getElementById("edit-search").addEventListener("input", function() {
+  const q = this.value.toLowerCase();
+  renderEditList(q ? allChunks.filter(c =>
+    (c.id || "").toLowerCase().includes(q) ||
+    (c.title || "").toLowerCase().includes(q) ||
+    (c.type || "").toLowerCase().includes(q)
+  ) : allChunks);
+});
+
+function renderEditList(chunks) {
+  const container = document.getElementById("edit-chunk-list");
+  container.innerHTML = "";
+  const byType = {};
+  for (const c of chunks) {
+    const t = c.type || "unknown";
+    (byType[t] = byType[t] || []).push(c);
+  }
+  const order = ["summary", "experience", "project", "skill", "education", "certification"];
+  const types  = [...new Set([...order, ...Object.keys(byType)])].filter(t => byType[t]);
+  for (const type of types) {
+    const lbl = document.createElement("div");
+    lbl.className = "edit-group-label";
+    lbl.textContent = type;
+    container.appendChild(lbl);
+    for (const chunk of byType[type]) {
+      const isInactive = chunk.active === false;
+      const row = document.createElement("div");
+      row.className = "edit-chunk-row"
+        + (editingChunk?.id === chunk.id ? " active-row" : "")
+        + (isInactive ? " inactive-row" : "");
+      row.dataset.id = chunk.id;
+      row.innerHTML = `<span class="edit-chunk-id">${chunk.id}</span><span class="edit-chunk-title">${chunk.title || "—"}</span><span class="edit-chunk-pri">p${chunk.priority ?? "?"}</span>${isInactive ? '<span class="edit-chunk-off">off</span>' : ""}`;
+      row.addEventListener("click", () => loadEditForm(chunk));
+      container.appendChild(row);
+    }
+  }
+}
+
+// =========================================================
+// Edit mode — form population
+// =========================================================
+
+function loadEditForm(chunk) {
+  editingChunk = chunk;
+  // Highlight active row
+  document.querySelectorAll(".edit-chunk-row").forEach(r =>
+    r.classList.toggle("active-row", r.dataset.id === chunk.id));
+
+  document.getElementById("edit-empty").style.display        = "none";
+  document.getElementById("edit-form-inner").classList.add("active");
+  document.getElementById("edit-status").textContent          = "";
+
+  document.getElementById("ef-id").textContent       = chunk.id;
+  document.getElementById("ef-type").textContent     = chunk.type;
+  document.getElementById("ef-title").value          = chunk.title        || "";
+  document.getElementById("ef-org").value            = chunk.organization || "";
+  document.getElementById("ef-date").value           = chunk.date_range   || "";
+  document.getElementById("ef-group").value          = chunk.group_key    || "";
+  document.getElementById("ef-track").value          = chunk.track        || "";
+
+  const isExpProj = chunk.type === "experience" || chunk.type === "project";
+  document.getElementById("ef-dateyears-row").style.display = isExpProj ? "" : "none";
+  if (isExpProj) {
+    document.getElementById("ef-start-year").value = chunk.start_year ?? "";
+    document.getElementById("ef-end-year").value   = chunk.end_year   ?? "";
+    document.getElementById("ef-seq").value        = chunk.seq        ?? "";
+  }
+  document.getElementById("ef-tags").value           = (chunk.tags     || []).join(", ");
+  document.getElementById("ef-keywords").value       = (chunk.keywords || []).join(", ");
+  const pri = chunk.priority ?? 7;
+  document.getElementById("ef-priority").value       = pri;
+  document.getElementById("ef-pval").textContent     = pri;
+
+  document.getElementById("ef-content").value = chunk.content || "";
+
+  // Active toggle
+  editingActive = chunk.active !== false;
+  const activeBtn = document.getElementById("ef-active-btn");
+  activeBtn.textContent = editingActive ? "● Active" : "○ Inactive";
+  activeBtn.className   = editingActive ? "ef-active-btn on" : "ef-active-btn off";
+
+  // Keywords only for skills
+  document.getElementById("ef-keywords-row").style.display = chunk.type === "skill" ? "" : "none";
+}
+
+
+// =========================================================
+// Edit mode — save
+// =========================================================
+
+document.getElementById("edit-save-btn").addEventListener("click", async () => {
+  if (!editingChunk) return;
+  const btn = document.getElementById("edit-save-btn");
+  btn.disabled = true;
+  btn.textContent = "Saving…";
+  document.getElementById("edit-status").textContent = "Writing chunk and re-embedding — takes a few seconds…";
+
+  const tagsRaw  = document.getElementById("ef-tags").value;
+  const kwRaw    = document.getElementById("ef-keywords").value;
+
+  const update = {
+    title:        document.getElementById("ef-title").value.trim(),
+    organization: document.getElementById("ef-org").value.trim(),
+    date_range:   document.getElementById("ef-date").value.trim(),
+    group_key:    document.getElementById("ef-group").value.trim(),
+    track:        document.getElementById("ef-track").value.trim() || null,
+    priority:     parseInt(document.getElementById("ef-priority").value),
+    tags:         tagsRaw  ? tagsRaw.split(",").map(s => s.trim()).filter(Boolean) : [],
+    keywords:     kwRaw    ? kwRaw.split(",").map(s => s.trim()).filter(Boolean)   : [],
+    content:      document.getElementById("ef-content").value.trim(),
+    active:       editingActive,
+  };
+
+  if (editingChunk.type === "experience" || editingChunk.type === "project") {
+    const sy = document.getElementById("ef-start-year").value;
+    const ey = document.getElementById("ef-end-year").value;
+    const sq = document.getElementById("ef-seq").value;
+    if (sy !== "") update.start_year = parseInt(sy);
+    if (ey !== "") update.end_year   = parseInt(ey);
+    if (sq !== "") update.seq        = parseInt(sq);
+  }
+
+  try {
+    const res  = await fetch(`${BASE}/wizard/chunks/${editingChunk.id}`, {
+      method:  "PUT",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify(update)
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      document.getElementById("edit-status").textContent = "Error: " + (data.detail || res.status);
+    } else {
+      Object.assign(editingChunk, data.chunk);
+      document.getElementById("edit-status").style.color = "var(--accent)";
+      document.getElementById("edit-status").textContent = "✓ Saved — embeddings updated";
+      // Refresh the list row to reflect title/active changes
+      const listRow = document.querySelector(`.edit-chunk-row[data-id="${editingChunk.id}"]`);
+      if (listRow) {
+        const isInactive = editingChunk.active === false;
+        listRow.classList.toggle("inactive-row", isInactive);
+        listRow.querySelector(".edit-chunk-title").textContent = editingChunk.title || "—";
+        const existingOff = listRow.querySelector(".edit-chunk-off");
+        if (isInactive && !existingOff) {
+          const badge = document.createElement("span");
+          badge.className = "edit-chunk-off";
+          badge.textContent = "off";
+          listRow.appendChild(badge);
+        } else if (!isInactive && existingOff) {
+          existingOff.remove();
+        }
+      }
+      loadStatus();
+    }
+  } catch (e) {
+    document.getElementById("edit-status").textContent = "Error: " + e.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Save";
+  }
+});
+
+async function loadStatus() {
+  try {
+    const res = await fetch(`${BASE}/wizard/status`);
+    const data = await res.json();
+    const chips = document.getElementById("status-chips");
+    chips.innerHTML = Object.entries(data.chunk_counts)
+      .map(([t, n]) => `<span class="chip">${t} <span>${n}</span></span>`)
+      .join("") + `<span class="chip">total <span>${data.total}</span></span>`;
+  } catch (_) {}
+}
+
+loadStatus();
+
+// Deeplink: ?edit=chunk_id auto-switches to edit mode on page load
+if (new URLSearchParams(location.search).get("edit")) {
+  setMode("edit");
+}
+</script>
+</body>
+</html>

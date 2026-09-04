@@ -1,0 +1,57 @@
+# Personal data — never commit
+data/resume_chunks.json
+data/user_profile.json
+data/*.npy
+data/*.json
+data/jobs.db
+data/app.db
+
+# Generated artifacts
+outputs/
+
+# Virtualenv
+venv/
+kratos/
+
+# Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+id_rsa*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# macOS
+.DS_Store
+
+# Playwright browsers
+.playwright/
+
+# Runtime
+.api.pid
+logs/*.log
+
+# Model and browser caches (project-local, not committed)
+.cache/
+
+# Chunk backups (auto-generated on every wizard save)
+data/chunks_backup/
+
+# Personal career/job-search notes — never commit
+notes/
+
+# Personal internal memory/notes not meant for public repo
+memory/
+.claude/
+linkedin-todo.txt
+mk-vault-link.sh
+refresh-obsidian-cache.sh
+_pre_cleanup_backup/
+_PRIVACY_MAP.md
+ss/
+github-prep.md

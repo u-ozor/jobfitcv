@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <rect width="48" height="48" rx="8" fill="#1a1a2e"/>
+  <!-- white outline layer -->
+  <text x="24" y="36" font-family="Arial, sans-serif" font-size="32" font-weight="bold"
+        text-anchor="middle" fill="none" stroke="#ffffff" stroke-width="2.5"
+        stroke-linejoin="round">J</text>
+  <!-- green fill layer -->
+  <text x="24" y="36" font-family="Arial, sans-serif" font-size="32" font-weight="bold"
+        text-anchor="middle" fill="#22c55e">J</text>
+</svg>

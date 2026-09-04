@@ -1,0 +1,211 @@
+/* ==========================================================================
+   Resume Document Styling
+   - LaTeX Charter serif aesthetic
+   - ATS-safe / Playwright PDF-ready
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+@page {
+    size: A4;
+    margin: 0.45in 0.5in;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Crimson Pro", "Georgia", "Times New Roman", serif;
+    font-size: 11pt;
+    line-height: 1.22;
+    color: #111;
+    background: white;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    text-rendering: geometricPrecision;
+}
+
+/* ── Page wrapper ────────────────────────────────────────────────────────── */
+/* NO horizontal padding here — header needs the full width to center in    */
+
+.container {
+    width: 100%;
+    max-width: 7.3in;
+    margin: 0 auto;
+    padding: 0.45in 0;   /* vertical only */
+}
+
+@media print {
+    .container {
+        padding: 0;
+        max-width: 100%;
+    }
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+/* Full width, explicitly centered so name sits middle of the page          */
+
+header {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 10pt;
+    padding: 0 0.5in;   /* match section side padding so contact text wraps cleanly */
+}
+
+header h1 {
+    font-size: 22pt;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 3pt;
+    letter-spacing: 0.01em;
+}
+
+.contact {
+    font-size: 9.5pt;
+    color: #222;
+    line-height: 1.4;
+}
+
+.contact a {
+    color: #111;
+    text-decoration: underline;
+    text-underline-offset: 1px;
+}
+
+.contact .sep {
+    margin: 0 3pt;
+    color: #555;
+}
+
+/* ── Sections ────────────────────────────────────────────────────────────── */
+/* Side padding lives here, not on .container                               */
+
+section {
+    margin-top: 9pt;
+    padding: 0 0.5in;
+}
+
+/* ── Section heading + full-width rule line ──────────────────────────────── */
+/* Matches LaTeX: \scshape text, then \titlerule spanning full width        */
+
+h2 {
+    display: flex;
+    align-items: center;
+    gap: 6pt;
+    font-size: 10pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    line-height: 1.15;
+    margin-bottom: 5pt;
+    white-space: nowrap;
+}
+
+h2::after {
+    content: '';
+    display: block;
+    flex: 1;
+    height: 0.75pt;
+    background: #111;
+}
+
+/* ── Entry layout ────────────────────────────────────────────────────────── */
+
+.entry {
+    margin-bottom: 5pt;
+}
+
+/* Flex row: left side grows, date/location pinned to right edge */
+.entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    width: 100%;
+    gap: 12pt;
+    margin-bottom: 1pt;
+}
+
+.entry-header > div:first-child {
+    flex: 1;          /* takes all available space */
+    min-width: 0;     /* allows text to wrap rather than overflow */
+}
+
+.entry-title {
+    font-weight: 700;
+    font-size: 11pt;
+}
+
+.entry-org {
+    font-style: italic;
+    font-size: 10.5pt;
+}
+
+.entry-date {
+    font-size: 9.5pt;
+    font-style: italic;
+    white-space: nowrap;
+    flex-shrink: 0;   /* never compress the date */
+    text-align: right;
+}
+
+/* ── Bullet lists ────────────────────────────────────────────────────────── */
+
+ul {
+    margin-top: 2pt;
+    padding-left: 14pt;
+    list-style-type: disc;
+}
+
+li {
+    font-size: 10.5pt;
+    margin-bottom: 1pt;
+    line-height: 1.22;
+}
+
+li::marker {
+    font-size: 6.5pt;
+}
+
+/* ── Skills / Achievements label: value rows ─────────────────────────────── */
+
+.skills-block {
+    padding-left: 2pt;
+}
+
+.skill-row {
+    display: flex;
+    align-items: baseline;
+    font-size: 10.5pt;
+    line-height: 1.3;
+}
+
+.skill-label {
+    font-weight: 700;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.skill-colon {
+    flex-shrink: 0;
+    margin-right: 4pt;
+}
+
+/* ── Summary ─────────────────────────────────────────────────────────────── */
+
+p.summary {
+    font-size: 10.5pt;
+    line-height: 1.3;
+}
+
+/* ── Print ───────────────────────────────────────────────────────────────── */
+
+@media print {
+    .entry-header { break-after: avoid; }
+    h2 { break-after: avoid; }
+    a { color: #111; text-decoration: underline; }
+}

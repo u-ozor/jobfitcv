@@ -1,0 +1,170 @@
+/* Shared CSS custom properties for all extension pages.
+   Include this file before any page-specific CSS.
+   Theme is applied via data-theme="<name>" on <body>.
+   Absence of data-theme (or empty string) = dark default. */
+
+:root {
+  --bg:            #111111;
+  --bg2:           #1e1e1e;
+  --bg3:           #181818;
+  --bg4:           #1a1a1a;
+  --border:        #333333;
+  --border2:       #2a2a2a;
+  --border3:       #222222;
+  --text:          #e0e0e0;
+  --text-muted:    #aaaaaa;
+  --text-dim:      #555555;
+  --text-dimmer:   #444444;
+  --text-company:  #666666;
+
+  /* Primary accent — green in default dark theme */
+  --accent:        #22c55e;
+  --accent-bg:     #0d2d1a;
+  --accent-border: #1a4d2d;
+  --accent-dark:   #16a34a;
+  --accent-text:   #111111;
+
+  /* Teal — used as primary action color in chunk_review */
+  --teal:          #2dd4bf;
+  --teal-bg:       #0a2826;
+
+  /* Score segment colors (data vis — kept stable across dark themes) */
+  --amber:         #fbbf24;
+  --amber-bg:      #2a1e04;
+  --rose:          #fb7185;
+  --rose-bg:       #2a0a10;
+  --slate:         #94a3b8;
+  --slate-bg:      #171f2d;
+
+  --disabled-bg:   #444444;
+  --disabled-text: #888888;
+  --danger:        #ef4444;
+}
+
+/* ── Warm (light parchment) ─────────────────────────────────────── */
+body[data-theme="warm"] {
+  --bg:            #faf7f0;
+  --bg2:           #ede8d8;
+  --bg3:           #f3edd8;
+  --bg4:           #ede8d8;
+  --border:        #c8b49a;
+  --border2:       #d8c8b0;
+  --border3:       #d0c0a8;
+  --text:          #1a1208;
+  --text-muted:    #6a5040;
+  --text-dim:      #907060;
+  --text-dimmer:   #b08860;
+  --text-company:  #a07858;
+  --accent:        #c94010;
+  --accent-bg:     #fde8e0;
+  --accent-border: #e07050;
+  --accent-dark:   #a83510;
+  --accent-text:   #ffffff;
+  --teal:          #0b766c;
+  --teal-bg:       #d0f4ef;
+  --amber:         #b45309;
+  --amber-bg:      #fef0c0;
+  --rose:          #be1239;
+  --rose-bg:       #fde4ea;
+  --slate:         #4d6070;
+  --slate-bg:      #dde6f0;
+  --disabled-bg:   #d0c8b8;
+  --disabled-text: #a09080;
+  --danger:        #cc2222;
+}
+
+/* ── Orange ─────────────────────────────────────────────────────── */
+body[data-theme="orange"] {
+  --bg:            #1e1508;
+  --bg2:           #2a1c0c;
+  --bg3:           #231208;
+  --bg4:           #261508;
+  --border:        #4a2e10;
+  --border2:       #3c240a;
+  --border3:       #301a08;
+  --text:          #f0e4cc;
+  --text-muted:    #c8a060;
+  --text-dim:      #7a5020;
+  --text-dimmer:   #5a3a10;
+  --text-company:  #9a6830;
+  --accent:        #f97316;
+  --accent-bg:     #260e00;
+  --accent-border: #7a3800;
+  --accent-dark:   #ea6a0a;
+  --accent-text:   #ffffff;
+  --teal:          #f97316;
+  --teal-bg:       #260e00;
+  --amber:         #fbbf24;
+  --amber-bg:      #2a1e04;
+  --rose:          #fb7185;
+  --rose-bg:       #2a0a10;
+  --slate:         #94a3b8;
+  --slate-bg:      #171f2d;
+  --disabled-bg:   #3a2a14;
+  --disabled-text: #7a5832;
+  --danger:        #ef4444;
+}
+
+/* ── Blue ───────────────────────────────────────────────────────── */
+body[data-theme="blue"] {
+  --bg:            #111c30;
+  --bg2:           #18253e;
+  --bg3:           #121a2e;
+  --bg4:           #141e34;
+  --border:        #2a3e72;
+  --border2:       #213458;
+  --border3:       #1c2c48;
+  --text:          #d0dcf4;
+  --text-muted:    #7890c0;
+  --text-dim:      #405080;
+  --text-dimmer:   #304060;
+  --text-company:  #5878a8;
+  --accent:        #60a5fa;
+  --accent-bg:     #0a1c40;
+  --accent-border: #1e3a70;
+  --accent-dark:   #3b82f6;
+  --accent-text:   #ffffff;
+  --teal:          #60a5fa;
+  --teal-bg:       #0a1c40;
+  --amber:         #fbbf24;
+  --amber-bg:      #2a1e04;
+  --rose:          #fb7185;
+  --rose-bg:       #2a0a10;
+  --slate:         #94a3b8;
+  --slate-bg:      #171f2d;
+  --disabled-bg:   #1e2840;
+  --disabled-text: #486090;
+  --danger:        #f87171;
+}
+
+/* ── Pink ───────────────────────────────────────────────────────── */
+body[data-theme="pink"] {
+  --bg:            #1c1020;
+  --bg2:           #281828;
+  --bg3:           #22141e;
+  --bg4:           #261622;
+  --border:        #4a2250;
+  --border2:       #3c1a46;
+  --border3:       #32163a;
+  --text:          #f0d8f4;
+  --text-muted:    #c878d0;
+  --text-dim:      #783880;
+  --text-dimmer:   #5a2860;
+  --text-company:  #9060a0;
+  --accent:        #f472b6;
+  --accent-bg:     #2a0838;
+  --accent-border: #6a1878;
+  --accent-dark:   #ec4899;
+  --accent-text:   #ffffff;
+  --teal:          #f472b6;
+  --teal-bg:       #2a0838;
+  --amber:         #fbbf24;
+  --amber-bg:      #2a1e04;
+  --rose:          #fb7185;
+  --rose-bg:       #2a0a10;
+  --slate:         #94a3b8;
+  --slate-bg:      #171f2d;
+  --disabled-bg:   #3a2040;
+  --disabled-text: #7a4880;
+  --danger:        #ef4444;
+}

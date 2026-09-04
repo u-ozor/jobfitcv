@@ -1,0 +1,308 @@
+{% macro date_display(chunk) -%}
+{%- set sy = chunk.start_year if chunk.start_year is defined else none -%}
+{%- set ey = chunk.end_year   if chunk.end_year   is defined else none -%}
+{%- if sy is not none and ey is not none -%}
+  {%- if ey == 0 -%}{{ sy }}–Present
+  {%- elif sy == ey -%}{{ sy }}
+  {%- else -%}{{ sy }}–{{ ey }}
+  {%- endif -%}
+{%- else -%}
+  {{- chunk.date_range or '' -}}
+{%- endif -%}
+{%- endmacro %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Resume of {{ resume.header.name }}</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- =========================
+         HEADER
+    ========================== -->
+
+    <header>
+
+        <h1>{{ resume.header.name }}</h1>
+
+        <div class="contact">
+
+            {% if resume.header.phone %}
+                {{ resume.header.phone }}
+            {% endif %}
+
+            {% if resume.header.email %}
+                <span class="sep">|</span>
+                <a href="mailto:{{ resume.header.email }}">{{ resume.header.email }}</a>
+            {% endif %}
+
+            {% if resume.header.linkedin %}
+                <span class="sep">|</span>
+                <a href="{{ resume.header.linkedin }}">{{ resume.header.linkedin }}</a>
+            {% endif %}
+
+            {% if resume.header.github %}
+                <span class="sep">|</span>
+                <a href="{{ resume.header.github }}">{{ resume.header.github }}</a>
+            {% endif %}
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================
+         EDUCATION
+    ========================== -->
+
+    {% if resume.education %}
+
+    <section>
+
+        <h2>Education</h2>
+
+        {% for edu in resume.education %}
+
+        <div class="entry">
+
+            <div class="entry-header">
+
+                <div>
+
+                    <span class="entry-title">{{ edu.title }}</span>
+
+                    {% if edu.organization %}
+                    <span class="entry-org">| {{ edu.organization }}</span>
+                    {% endif %}
+
+                </div>
+
+                {% set edu_date = date_display(edu) %}
+                {% if edu_date %}
+                <div class="entry-date">{{ edu_date }}</div>
+                {% endif %}
+
+            </div>
+
+            {% if edu.content %}
+            <ul>
+                <li>{{ edu.content }}</li>
+            </ul>
+            {% endif %}
+
+        </div>
+
+        {% endfor %}
+
+    </section>
+
+    {% endif %}
+
+
+    <!-- =========================
+         SKILLS
+    ========================== -->
+
+    {% if resume.skills %}
+
+    <section>
+
+        <h2>Skills</h2>
+
+        <div class="skills-block">
+
+            {% for group, items in resume.skills.items() %}
+
+            <div class="skill-row">
+
+                <span class="skill-label">
+                    {{ group.replace('_', ' ').title() }}
+                </span>
+
+                <span class="skill-colon">:</span>
+
+                <span>
+                    {{ items | join(', ') }}
+                </span>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+
+    <!-- =========================
+         EXPERIENCE
+    ========================== -->
+
+    {% if resume.experience %}
+
+    <section>
+
+        <h2>Experience</h2>
+
+        {% for group in resume.experience.values() %}
+
+            {% set first = group[0] %}
+
+            <div class="entry">
+
+                <div class="entry-header">
+
+                    <div>
+
+                        <span class="entry-title">{{ first.title }}</span>
+
+                        {% if first.organization %}
+                        <span class="entry-org">| {{ first.organization }}</span>
+                        {% endif %}
+
+                    </div>
+
+                    {% set exp_date = date_display(first) %}
+                    {% if exp_date %}
+                    <div class="entry-date">{{ exp_date }}</div>
+                    {% endif %}
+
+                </div>
+
+                <ul>
+                    {% for bullet in group %}
+                        <li>{{ bullet.content }}</li>
+                    {% endfor %}
+                </ul>
+
+            </div>
+
+        {% endfor %}
+
+    </section>
+
+    {% endif %}
+
+
+    <!-- =========================
+         PROJECTS
+    ========================== -->
+
+    {% if resume.projects %}
+
+    <section>
+
+        <h2>Projects</h2>
+
+        {% for group in resume.projects.values() %}
+
+            {% set first = group[0] %}
+
+            <div class="entry">
+
+                <div class="entry-header">
+
+                    <div>
+
+                        <span class="entry-title">{{ first.title }}</span>
+
+                        {% if first.organization %}
+                        <span class="entry-org">| {{ first.organization }}</span>
+                        {% endif %}
+
+                    </div>
+
+                    {% set proj_date = date_display(first) %}
+                    {% if proj_date %}
+                    <div class="entry-date">{{ proj_date }}</div>
+                    {% endif %}
+
+                </div>
+
+                {% if first.links %}
+                <div class="project-links">
+                    {% for link in first.links %}
+                        <div><a href="{{ link }}">{{ link }}</a></div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <ul>
+                    {% for bullet in group %}
+                        <li>{{ bullet.content }}</li>
+                    {% endfor %}
+                </ul>
+
+            </div>
+
+        {% endfor %}
+
+    </section>
+
+    {% endif %}
+
+
+    <!-- =========================
+         ACHIEVEMENTS
+    ========================== -->
+
+    {% if resume.achievements %}
+
+    <section>
+
+        <h2>Achievements</h2>
+
+        <div class="skills-block">
+
+            {% for item in resume.achievements %}
+            <div class="skill-row">
+                <span class="skill-label">{{ item.title }}</span>
+                <span class="skill-colon">:</span>
+                <span>{{ item.description }}</span>
+            </div>
+            {% endfor %}
+
+            {% if resume.interests %}
+            <div class="skill-row">
+                <span class="skill-label">Interests</span>
+                <span class="skill-colon">:</span>
+                <span>{{ resume.interests | join(', ') }}</span>
+            </div>
+            {% endif %}
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+
+    <!-- =========================
+         SUMMARY
+    ========================== -->
+
+    {% if resume.summary %}
+
+    <section>
+
+        <h2>Summary</h2>
+
+        <p class="summary">{{ resume.summary[0].content }}</p>
+
+    </section>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>

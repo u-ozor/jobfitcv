@@ -1,0 +1,64 @@
+{
+  "experience": [
+    {
+      "employer": "Company Name",
+      "title": "Your Job Title",
+      "location": "City, Province/State",
+      "start_month": "01",
+      "start_year": "2023",
+      "end_month": null,
+      "end_year": null,
+      "current": true,
+      "bullets": [
+        "Action verb + what you did + result or scale",
+        "Second distinct bullet — keep each to one line",
+        "Third bullet only if genuinely different from above"
+      ],
+      "description": "Prose version of the bullets above, used when the form has a single textarea instead of separate bullet fields. Same content, joined into sentences."
+    },
+    {
+      "employer": "Previous Company",
+      "title": "Previous Title",
+      "location": "City, Province/State",
+      "start_month": "06",
+      "start_year": "2021",
+      "end_month": "12",
+      "end_year": "2022",
+      "current": false,
+      "bullets": [
+        "Bullet focused on transferable skills",
+        "Specific technical or operational outcome"
+      ],
+      "description": "Prose version for textarea fields."
+    }
+  ],
+  "education": [
+    {
+      "institution": "University Name",
+      "degree": "MEng",
+      "field": "Information Systems Security",
+      "location": "City, Country",
+      "start_year": "2022",
+      "end_year": "2024",
+      "gpa": null
+    },
+    {
+      "institution": "Previous University or College",
+      "degree": "BEng",
+      "field": "Your Field",
+      "location": "City, Country",
+      "start_year": "2018",
+      "end_year": "2022",
+      "gpa": null
+    }
+  ],
+  "certifications": [
+    {
+      "name": "CompTIA Security+",
+      "issuer": "CompTIA",
+      "issued_month": "03",
+      "issued_year": "2024",
+      "credential_id": null
+    }
+  ]
+}

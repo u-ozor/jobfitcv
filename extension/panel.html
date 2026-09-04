@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="themes.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 14px;
+      min-width: 260px;
+      font-size: 0.85rem;
+    }
+
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .header-left { display: flex; align-items: center; gap: 6px; }
+
+    h2 { font-size: 0.95rem; color: var(--accent); letter-spacing: 0.04em; }
+
+    a.nav-link { font-size: 0.75rem; color: var(--text-dim); text-decoration: none; }
+    a.nav-link:hover { color: var(--accent); }
+
+    .refresh-btn {
+      background: none; border: none; color: var(--text-dim); cursor: pointer;
+      font-size: 0.9rem; padding: 0 4px; line-height: 1;
+    }
+    .refresh-btn:hover { color: var(--accent); }
+
+    .tip { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px; }
+
+    button.primary-btn {
+      width: 100%; padding: 8px 10px; margin-top: 8px;
+      background: var(--accent); color: var(--accent-text);
+      border: none; border-radius: 4px; font-weight: 600;
+      cursor: pointer; font-size: 0.85rem;
+    }
+    button.primary-btn:disabled {
+      background: var(--disabled-bg); color: var(--disabled-text); cursor: default;
+    }
+
+    label {
+      display: block; font-size: 0.75rem; color: var(--text-muted);
+      margin-top: 10px; margin-bottom: 3px;
+    }
+
+    input[type="text"], textarea {
+      width: 100%; background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 4px; color: var(--text); padding: 6px 8px;
+      font-size: 0.8rem; font-family: inherit; resize: vertical;
+    }
+    textarea { line-height: 1.4; }
+
+    .ats-badge {
+      font-size: 0.72rem; color: var(--accent); background: var(--accent-bg);
+      border: 1px solid var(--accent-border); border-radius: 3px;
+      padding: 2px 7px; display: inline-block; margin-top: 8px;
+    }
+
+    /* Role match badge — shown in job-info and job cards */
+    .role-match-badge {
+      display: inline-block; font-size: 0.64rem; border-radius: 3px;
+      padding: 1px 6px; font-weight: 600; letter-spacing: 0.02em;
+    }
+    .role-match-badge.strong  { background: #0d2d2a; color: #14b8a6; border: 1px solid #14b8a6; }
+    .role-match-badge.possible{ background: #2d1f04; color: #f59e0b; border: 1px solid #f59e0b; }
+    .role-match-badge.outside { background: #2d0d0d; color: #f43f5e; border: 1px solid #f43f5e; opacity: 0.7; }
+    body[data-theme="warm"] .role-match-badge.strong   { background: #e0f5f2; border-color: #0d9488; color: #0d9488; }
+    body[data-theme="warm"] .role-match-badge.possible { background: #fef3c7; border-color: #d97706; color: #b45309; }
+    body[data-theme="warm"] .role-match-badge.outside  { background: #fee2e2; border-color: #ef4444; color: #b91c1c; opacity: 0.8; }
+
+    /* Description area label inline dim span */
+    .label-dim      { color: var(--text-dim); }
+    .label-required { color: var(--rose, #f43f5e); font-weight: 700; margin-left: 1px; }
+
+    #status { margin-top: 10px; font-size: 0.78rem; color: var(--text-muted); min-height: 1.2em; }
+
+    #job-info {
+      margin-top: 12px; background: var(--bg4);
+      border: 1px solid var(--border2); border-radius: 4px; padding: 8px 10px;
+    }
+    #job-info .track { font-size: 0.75rem; color: var(--accent); margin-top: 3px; }
+    #job-url-link { color: var(--text-dim); font-size: 0.75rem; text-decoration: none; flex-shrink: 0; }
+    #job-url-link:hover { color: var(--accent); }
+
+    #fill-form-btn {
+      width: 100%; margin-top: 6px; padding: 6px 10px; background: none;
+      border: 1px solid var(--border); border-radius: 4px; color: var(--text-muted);
+      cursor: pointer; font-size: 0.8rem;
+    }
+    #fill-form-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    #job-text-toggle {
+      width: 100%; margin-top: 4px; padding: 4px 10px; background: none; border: none;
+      color: var(--text-dimmer); cursor: pointer; font-size: 0.72rem; text-align: left;
+    }
+    #job-text-toggle:hover { color: var(--text-muted); }
+
+    #job-text-area {
+      width: 100%; height: 140px; margin-top: 4px; background: var(--bg4);
+      border: 1px solid var(--border2); border-radius: 3px; color: var(--text-muted);
+      font-size: 0.7rem; padding: 6px; resize: vertical; font-family: system-ui, sans-serif;
+    }
+
+    /* Output links */
+    #links { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+    #links a, #links button {
+      display: block; padding: 7px 10px; background: var(--bg2);
+      border: 1px solid var(--border); border-radius: 4px; color: var(--text);
+      text-decoration: none; font-size: 0.8rem; text-align: center;
+      cursor: pointer; width: 100%; font-weight: normal; margin-top: 0;
+    }
+    #links a:hover, #links button:hover { border-color: var(--accent); color: var(--accent); }
+    #resume-preview-frame {
+      display: none; width: 100%; height: 420px; border: 1px solid var(--border2);
+      border-radius: 4px; margin-top: 2px; background: #fff; resize: vertical; overflow: auto;
+    }
+
+    hr.divider { border: none; border-top: 1px solid var(--bg2); margin: 16px 0 12px; }
+
+    .section-label {
+      font-size: 0.7rem; color: var(--text-dimmer); text-transform: uppercase;
+      letter-spacing: 0.07em; margin-bottom: 8px;
+    }
+
+    /* Recent job items */
+    .job-item {
+      background: var(--bg3); border: 1px solid var(--border3);
+      border-radius: 4px; padding: 7px 9px; margin-bottom: 6px;
+    }
+    .job-item-title { font-size: 0.8rem; font-weight: 600; }
+    .job-item-company {
+      font-size: 0.72rem; color: var(--text-company); margin-bottom: 3px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .job-item-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
+    .track-chip {
+      font-size: 0.66rem; background: var(--accent-bg); color: var(--accent);
+      border-radius: 3px; padding: 1px 5px;
+    }
+    .job-item-date { font-size: 0.7rem; color: var(--text-dimmer); }
+    .job-item-actions { display: flex; gap: 4px; flex-wrap: wrap; }
+    .job-item-title-row { display: flex; align-items: baseline; gap: 4px; margin-bottom: 3px; }
+    .job-focus-link {
+      cursor: pointer; overflow: hidden; text-overflow: ellipsis;
+      white-space: nowrap; flex: 1; min-width: 0; font-size: 0.8rem;
+    }
+    .job-focus-link:hover { color: var(--accent); }
+    .job-ext-link { color: var(--text-dimmer); font-size: 0.7rem; text-decoration: none; flex-shrink: 0; }
+    .job-ext-link:hover { color: var(--accent); }
+
+    /* Small buttons */
+    .btn-sm {
+      padding: 3px 8px; font-size: 0.7rem; background: var(--bg2);
+      border: 1px solid var(--border2); border-radius: 3px; color: var(--text-muted);
+      cursor: pointer; font-weight: 500; width: auto; margin-top: 0;
+    }
+    .btn-sm:hover { border-color: var(--accent); color: var(--accent); background: var(--bg2); }
+    .btn-sm:disabled { opacity: 0.4; cursor: default; }
+    .btn-sm.primary { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+    .btn-sm.primary:hover { background: var(--accent-dark); border-color: var(--accent-dark); color: var(--accent-text); }
+    .btn-sm.danger:hover { border-color: var(--danger); color: var(--danger); }
+
+    #recent-jobs-list { max-height: 360px; overflow-y: auto; }
+
+    /* Rewrite hint */
+    .rw-hint { font-size: 0.67rem; color: var(--text-dimmer); text-align: center; margin-top: -1px; }
+
+    /* Cover letter */
+    #cl-section {
+      margin-top: 10px; border-top: 1px solid var(--bg2); padding-top: 8px;
+    }
+    #cl-label { font-size: 0.72rem; color: var(--text-dim); margin-bottom: 5px; }
+    #cl-status { font-size: 0.72rem; color: var(--text-dim); min-height: 1em; }
+    #cl-brief {
+      width: 100%; height: 52px; margin-bottom: 5px; background: var(--bg4);
+      border: 1px solid var(--border2); border-radius: 3px; color: var(--text);
+      font-size: 0.68rem; padding: 5px 6px; resize: vertical; font-family: system-ui, sans-serif;
+    }
+    #cl-brief::placeholder { color: var(--text-dimmer); }
+    #cl-text-area {
+      width: 100%; height: 120px; margin-top: 4px; background: var(--bg4);
+      border: 1px solid var(--border2); border-radius: 3px; color: var(--text);
+      font-size: 0.7rem; padding: 6px; resize: vertical; font-family: system-ui, sans-serif;
+    }
+    #cl-view-link {
+      display: block; margin-top: 4px; font-size: 0.7rem;
+      color: var(--text-dimmer); text-decoration: none; text-align: right;
+    }
+    #cl-view-link:hover { color: var(--accent); }
+
+    .cl-tone-btn {
+      flex: 1; padding: 3px 0; font-size: 0.68rem; background: var(--bg4);
+      border: 1px solid var(--border2); border-radius: 3px; color: var(--text-dim); cursor: pointer;
+    }
+    .cl-tone-btn.active { border-color: var(--accent); color: var(--accent); }
+    .cl-tone-btn:hover:not(.active) { border-color: var(--border); color: var(--text-muted); }
+
+    /* Search */
+    #search-input {
+      flex: 1; background: var(--bg4); border: 1px solid var(--border2);
+      border-radius: 3px; color: var(--text); font-size: 0.72rem;
+      padding: 3px 6px; outline: none;
+    }
+    .search-clear-btn {
+      background: none; border: none; color: var(--text-dimmer); cursor: pointer;
+      font-size: 0.75rem; padding: 0 3px; line-height: 1; flex-shrink: 0;
+    }
+    .search-clear-btn:hover { color: var(--text-muted); }
+
+    .hidden { display: none !important; }
+
+    #clear-job-btn { color: #ef4444; font-size: 1rem; }
+    #clear-job-btn:hover { color: #f87171; }
+    #job-url-link { color: var(--accent); font-size: 0.85rem; }
+    #job-url-link:hover { color: var(--accent-dark); }
+    #regen-btn { color: var(--text-dim); }
+    #regen-btn:hover { color: var(--text); }
+
+    #default-cv-section {
+      border-bottom: 1px solid var(--border);
+      padding: 6px 0 8px;
+      margin-bottom: 4px;
+    }
+    .dcv-row { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+    .dcv-label { font-size:0.72rem; font-weight:600; color:var(--text); flex-shrink:0; }
+    .dcv-ts { font-size:0.68rem; color:var(--text-dim); flex:1; min-width:0; }
+    .dcv-link { font-size:0.72rem; color:var(--accent); text-decoration:none; cursor:pointer; flex-shrink:0; }
+    .dcv-link:hover { text-decoration:underline; }
+    #dcv-regen { font-size:0.72rem; background:none; border:1px solid var(--border); border-radius:4px; padding:2px 6px; cursor:pointer; color:var(--text-dim); flex-shrink:0; }
+    #dcv-regen:hover { color:var(--text); }
+    #dcv-status { font-size:0.68rem; color:var(--text-dim); margin-top:2px; min-height:1em; }
+  </style>
+</head>
+<body>
+
+  <div class="header-row">
+    <div class="header-left">
+      <h2>jobfitcv</h2>
+      <span data-theme-picker></span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button class="refresh-btn" id="refresh-btn" title="Refresh job list">⟳</button>
+      <a class="nav-link" id="tracking-link" target="_blank">Tracking ↗</a>
+    </div>
+  </div>
+
+  <!-- Default CV — always visible -->
+  <div id="default-cv-section">
+    <div class="dcv-row">
+      <span class="dcv-label">Default CV</span>
+      <span id="dcv-ts" class="dcv-ts"></span>
+      <a id="dcv-chunk-review" class="dcv-link hidden" title="Chunk Review">⊞ Chunks</a>
+      <a id="dcv-html" class="dcv-link hidden" target="_blank" title="View HTML">HTML</a>
+      <a id="dcv-pdf" class="dcv-link hidden" target="_blank" title="Download PDF">PDF</a>
+      <button id="dcv-regen" title="Regenerate default CV">↺</button>
+    </div>
+    <div id="dcv-status"></div>
+    <!-- Other general-purpose CVs (any job with no company set) — populated dynamically,
+         not hardcoded to a specific variant ID. See loadGeneralCvs() in panel.js. -->
+    <div id="general-cvs-list"></div>
+  </div>
+
+  <!-- Step 1: Capture -->
+  <div id="capture-section">
+    <p class="tip">Navigate to a job posting, then capture. "See more" expands automatically.</p>
+    <button class="primary-btn" id="ingest-btn">Capture This Job</button>
+    <p class="tip" style="margin-top:10px;margin-bottom:4px;">Or paste a LinkedIn / Indeed URL:</p>
+    <div style="display:flex;gap:6px;">
+      <input id="url-input" type="text" placeholder="https://linkedin.com/jobs/view/…" style="flex:1;font-size:0.78rem;" />
+      <button id="url-ingest-btn" class="secondary-btn" style="white-space:nowrap;">Go</button>
+    </div>
+  </div>
+
+  <!-- Step 2: Preview + confirm -->
+  <div id="preview-section" class="hidden">
+    <div id="ats-badge" class="ats-badge hidden"></div>
+    <label for="title-input">Job Title <span class="label-dim">— review recommended, used for role matching</span></label>
+    <input id="title-input" type="text" />
+    <label for="company-input">Company <span class="label-required">*</span></label>
+    <input id="company-input" type="text" placeholder="Required" />
+    <label for="category-select">Category</label>
+    <select id="category-select">
+      <option value="Main" selected>Main</option>
+      <option value="PT">PT</option>
+      <option value="Bridge">Bridge</option>
+      <option value="Other">Other</option>
+    </select>
+    <label for="description-area">Job Description <span class="label-dim">— trim everything above "About the role", "Responsibilities", or similar</span></label>
+    <textarea id="description-area" rows="10"></textarea>
+    <button class="primary-btn" id="confirm-btn">Confirm &amp; Save</button>
+  </div>
+
+  <!-- Step 3: Job in scope -->
+  <div id="job-info" class="hidden">
+    <div style="display:flex;align-items:baseline;gap:6px;">
+      <div style="flex:1;min-width:0;overflow:hidden;">
+        <div id="job-company" style="font-size:0.72rem;color:var(--text-company);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+        <div id="job-title" style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+      </div>
+      <a id="job-url-link" target="_blank" title="Open original posting" class="hidden" style="text-decoration:none;font-weight:600;">↗</a>
+      <button id="clear-job-btn" title="Clear current job" style="background:none;border:none;cursor:pointer;padding:0 2px;line-height:1;font-weight:700;">×</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;margin-top:3px;">
+      <div id="job-track" class="track"></div>
+      <span id="role-match-badge" class="role-match-badge hidden"></span>
+      <a id="jd-actual-btn" href="#" target="_blank" class="hidden" style="font-size:0.68rem;color:var(--text-dim,var(--text-company));text-decoration:underline;opacity:0.85;">Full JD ↗</a>
+    </div>
+    <button class="primary-btn" id="generate-btn">Generate Resume</button>
+    <button id="fill-form-btn">Fill Form on Page</button>
+    <button id="job-text-toggle">▶ Job text</button>
+    <div id="job-text-section" class="hidden">
+      <textarea id="job-text-area" readonly></textarea>
+    </div>
+  </div>
+
+  <div id="status"></div>
+
+  <!-- Step 4: Output links -->
+  <div id="links" class="hidden">
+    <!-- Edit this resume's content/selection -->
+    <button id="chunk-review-btn">⊞ Chunk Review ↗</button>
+    <span class="rw-hint">Chunk Review — pick, reorder, assess fit before applying</span>
+    <button id="rewrite-btn">✎ Rewrite Review ↗</button>
+    <a id="edit-link" target="_blank">Edit Resume</a>
+
+    <!-- View this resume's output -->
+    <a id="html-link" target="_blank">View HTML</a>
+    <a id="pdf-link"  target="_blank">Download PDF</a>
+    <button id="resume-preview-toggle">▶ Preview in panel</button>
+    <iframe id="resume-preview-frame"></iframe>
+
+    <!-- Secondary: destructive (regen, in place) vs. global-scope (wizard, reaches outside this job) -->
+    <div style="display:flex;gap:6px;align-items:center;margin-top:6px;flex-wrap:wrap;">
+      <button id="regen-btn" style="font-size:0.72rem;background:none;border:1px solid var(--border);border-radius:4px;padding:4px 10px;line-height:1.2;cursor:pointer;">↺ Re-generate</button>
+      <a href="http://localhost:8000/wizard" target="_blank" style="font-size:0.72rem;border:1px dashed var(--accent);color:var(--accent);border-radius:4px;padding:4px 10px;line-height:1.2;text-decoration:none;">✦ Wizard</a>
+      <span style="font-size:0.65rem;opacity:0.55;">edits all resumes, not just this one</span>
+    </div>
+  </div>
+
+  <!-- Cover letter section — shown when job is in scope -->
+  <div id="cl-section" class="hidden">
+    <hr class="divider">
+    <div id="cl-label">Cover Letter</div>
+    <div style="display:flex;gap:4px;margin-bottom:6px;">
+      <button class="cl-tone-btn active" data-tone="professional">Professional</button>
+      <button class="cl-tone-btn" data-tone="direct">Direct</button>
+      <button class="cl-tone-btn" data-tone="warm">Warm</button>
+    </div>
+    <textarea id="cl-brief" placeholder="Briefing notes — angles to emphasise, framing, anything the model should prioritise (optional)"></textarea>
+    <button id="cl-generate-btn" class="btn-sm primary" style="width:100%;margin-bottom:5px;">Generate Cover Letter</button>
+    <div id="cl-status"></div>
+    <div id="cl-output" class="hidden">
+      <textarea id="cl-text-area"></textarea>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
+        <a id="cl-view-link" target="_blank">Open full ↗</a>
+        <div style="display:flex;gap:4px;">
+          <button id="cl-download-btn" class="btn-sm">↓ txt</button>
+          <button id="cl-download-pdf-btn" class="btn-sm">↓ pdf</button>
+          <button id="cl-download-docx-btn" class="btn-sm">↓ doc</button>
+          <a id="cl-view-combined-link" target="_blank" class="btn-sm" style="border-color:var(--accent);color:var(--accent);text-decoration:none;display:inline-flex;align-items:center;">↗ cv+cl</a>
+          <button id="cl-download-combined-btn" class="btn-sm" style="border-color:var(--accent);color:var(--accent);">↓ cv+cl</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent jobs -->
+  <hr class="divider">
+  <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+    <span class="section-label" style="margin-bottom:0">Recent Jobs</span>
+    <input id="search-input" type="text" placeholder="Search…" />
+    <button class="search-clear-btn hidden" id="search-clear-btn" title="Clear search">✕</button>
+  </div>
+  <div id="recent-jobs-list"></div>
+
+  <script src="config.js"></script>
+  <script src="theme-picker.js"></script>
+  <script src="panel.js"></script>
+</body>
+</html>

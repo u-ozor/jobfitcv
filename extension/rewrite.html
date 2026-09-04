@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Rewrite Review — jobfitcv</title>
+  <link rel="stylesheet" href="themes.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      font-size: 0.85rem;
+    }
+
+    /* ── Header ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 16px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border2);
+      flex-shrink: 0;
+    }
+    .header-left { display: flex; align-items: baseline; gap: 8px; }
+    .app-name { font-size: 0.9rem; color: var(--accent); font-weight: 600; letter-spacing: 0.04em; }
+    .sep { color: var(--text-dimmer); }
+    #job-meta { font-size: 0.8rem; color: var(--text-muted); }
+    .header-right { display: flex; align-items: center; gap: 8px; }
+    .icon-btn {
+      background: none; border: 1px solid var(--border2); color: var(--text-dim);
+      cursor: pointer; font-size: 0.8rem; padding: 2px 8px; border-radius: 3px;
+    }
+    .icon-btn:hover { color: var(--text); border-color: var(--border); }
+
+    /* ── Status bar ── */
+    #status-bar {
+      padding: 5px 16px; font-size: 0.74rem; color: var(--text-muted);
+      border-bottom: 1px solid var(--border2); flex-shrink: 0; min-height: 28px;
+      display: flex; align-items: center;
+    }
+
+    /* ── Two-pane ── */
+    .main-content {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ── Left pane: review mode ── */
+    .left-pane {
+      flex: 0 0 460px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-right: 1px solid var(--border2);
+      transition: flex 0.15s ease;
+    }
+
+    /* In comparison mode both panes go 50/50 */
+    .main-content.comparing .left-pane {
+      flex: 1;
+    }
+
+    .pane-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 12px;
+      background: var(--bg3);
+      border-bottom: 1px solid var(--border2);
+      flex-shrink: 0;
+      gap: 8px;
+      min-height: 38px;
+    }
+    .pane-label { font-size: 0.73rem; color: var(--text-dim); }
+
+    .section-tabs { display: flex; gap: 3px; flex-wrap: wrap; }
+    .tab {
+      padding: 3px 10px; font-size: 0.72rem; background: var(--bg2);
+      border: 1px solid var(--border2); border-radius: 3px; color: var(--text-muted);
+      cursor: pointer; white-space: nowrap;
+    }
+    .tab.active { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
+    .tab:hover:not(.active) { border-color: var(--border); color: var(--text); }
+    .tab-count { font-size: 0.67rem; opacity: 0.75; }
+    .rerun-btn {
+      padding: 3px 10px; font-size: 0.72rem; background: var(--bg2);
+      border: 1px solid var(--border2); border-radius: 3px; color: var(--text-muted);
+      cursor: pointer; flex-shrink: 0;
+    }
+    .rerun-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .rerun-btn:disabled { opacity: 0.4; cursor: default; }
+
+    .history-select {
+      font-size: 0.72rem; background: var(--bg2);
+      border: 1px solid var(--border2); border-radius: 3px; color: var(--text-muted);
+      padding: 3px 6px; flex-shrink: 0; max-width: 180px; cursor: pointer;
+    }
+    .history-select:hover, .history-select:focus {
+      border-color: var(--border); color: var(--text); outline: none;
+    }
+
+    #items-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+    }
+
+    /* ── Items ── */
+    .rw-item {
+      background: var(--bg2); border: 1px solid var(--border2);
+      border-radius: 5px; padding: 9px 11px; margin-bottom: 8px;
+    }
+    .rw-head {
+      display: flex; align-items: baseline; gap: 7px; margin-bottom: 7px; flex-wrap: wrap;
+    }
+    .rw-label {
+      display: flex; align-items: baseline; gap: 5px; cursor: pointer; flex: 1; min-width: 0;
+    }
+    .rw-label input[type="checkbox"] { flex-shrink: 0; cursor: pointer; margin-top: 1px; }
+    .section-chip {
+      font-size: 0.63rem; background: var(--bg4); color: var(--text-dim);
+      border: 1px solid var(--border2); border-radius: 2px; padding: 1px 5px;
+      flex-shrink: 0; white-space: nowrap;
+    }
+    .item-label { font-size: 0.79rem; font-weight: 600; color: var(--text); }
+    .badge {
+      font-size: 0.62rem; border-radius: 3px; padding: 1px 6px; flex-shrink: 0; white-space: nowrap;
+    }
+    .badge-rec { background: var(--accent-bg); color: var(--accent); border: 1px solid var(--accent-border); }
+    .badge-opt { background: var(--bg4); color: var(--text-dim); border: 1px solid var(--border2); }
+    .diff-label {
+      font-size: 0.63rem; color: var(--text-dimmer); text-transform: uppercase;
+      letter-spacing: 0.05em; margin-bottom: 3px;
+    }
+    .rw-before {
+      font-size: 0.77rem; color: var(--text-muted); background: var(--bg3);
+      border-radius: 3px; padding: 5px 8px; margin-bottom: 6px;
+      border-left: 2px solid var(--border); line-height: 1.45;
+    }
+    .rw-after {
+      font-size: 0.77rem; color: var(--text); background: var(--bg3);
+      border-radius: 3px; padding: 5px 8px;
+      border-left: 2px solid var(--accent); line-height: 1.45;
+    }
+    .empty-msg {
+      color: var(--text-dim); font-size: 0.8rem; padding: 40px 0; text-align: center;
+    }
+
+    /* ── Footer actions ── */
+    #footer-actions {
+      display: flex; gap: 6px; padding: 9px 12px;
+      background: var(--bg2); border-top: 1px solid var(--border2);
+      flex-shrink: 0; align-items: center;
+    }
+    .footer-btn {
+      padding: 5px 14px; font-size: 0.8rem; border-radius: 4px; cursor: pointer;
+      border: 1px solid var(--border2); background: var(--bg); color: var(--text-muted);
+    }
+    .footer-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .footer-btn:disabled { opacity: 0.4; cursor: default; }
+    .footer-btn.primary {
+      background: var(--accent); color: var(--accent-text); border-color: var(--accent);
+      font-weight: 600; flex: 1;
+    }
+    .footer-btn.primary:hover { background: var(--accent-dark); border-color: var(--accent-dark); color: var(--accent-text); }
+    .footer-btn.danger:hover { border-color: #ef4444; color: #ef4444; }
+
+    /* ── Before resume frame (shown in left pane after apply) ── */
+    #before-frame {
+      flex: 1;
+      width: 100%;
+      border: none;
+      background: #fff;
+    }
+
+    /* ── Right pane: live resume ── */
+    .right-pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-width: 0;
+    }
+
+    #resume-frame {
+      flex: 1;
+      width: 100%;
+      border: none;
+      background: #fff;
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-left">
+      <span class="app-name">jobfitcv</span>
+      <span class="sep">/</span>
+      <span id="job-meta">Rewrite Review</span>
+    </div>
+    <div class="header-right">
+      <span data-theme-picker></span>
+      <button class="icon-btn" id="close-btn">✕ Close</button>
+    </div>
+  </header>
+
+  <div id="status-bar">Initializing…</div>
+
+  <div class="main-content" id="main-content">
+
+    <!-- Left pane — switches from items list to "Before" resume after apply -->
+    <div class="left-pane" id="left-pane">
+
+      <!-- Review mode: section tabs toolbar -->
+      <div class="pane-toolbar" id="left-toolbar-review">
+        <div class="section-tabs">
+          <button class="tab active" data-section="all">All<span class="tab-count" id="cnt-all"></span></button>
+          <button class="tab" data-section="summary">Summary<span class="tab-count" id="cnt-summary"></span></button>
+          <button class="tab" data-section="experience">Experience<span class="tab-count" id="cnt-experience"></span></button>
+          <button class="tab" data-section="project">Projects<span class="tab-count" id="cnt-project"></span></button>
+        </div>
+        <select id="history-select" class="history-select" title="Load a saved diff">
+          <option value="">History…</option>
+        </select>
+        <button class="rerun-btn" id="rerun-btn">↻ Re-run</button>
+      </div>
+
+      <!-- Comparison mode: "Before" label toolbar -->
+      <div class="pane-toolbar hidden" id="left-toolbar-compare">
+        <span class="pane-label">Before — original</span>
+      </div>
+
+      <!-- Items list (review mode) -->
+      <div id="items-scroll"></div>
+
+      <!-- Before resume frame (comparison mode) -->
+      <iframe id="before-frame" class="hidden" title="Before resume"></iframe>
+
+      <!-- Footer actions (review mode) -->
+      <div id="footer-actions" class="hidden">
+        <button class="footer-btn" id="select-all-btn">Select All</button>
+        <button class="footer-btn primary" id="apply-btn">Apply Approved</button>
+        <button class="footer-btn danger" id="discard-btn">Discard</button>
+      </div>
+
+    </div>
+
+    <!-- Right pane — current/after resume preview -->
+    <div class="right-pane">
+
+      <div class="pane-toolbar" id="right-toolbar">
+        <span class="pane-label" id="right-label">Current resume</span>
+      </div>
+
+      <iframe id="resume-frame" title="Resume preview"></iframe>
+
+    </div>
+
+  </div>
+
+  <script src="config.js"></script>
+  <script src="theme-picker.js"></script>
+  <script src="rewrite.js"></script>
+</body>
+</html>

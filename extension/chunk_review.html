@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chunk Review — jobfitcv</title>
+  <link rel="stylesheet" href="themes.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      font-size: 0.85rem;
+    }
+
+    /* ── Header ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border2);
+      flex-shrink: 0;
+      gap: 8px;
+    }
+    .header-left { display: flex; align-items: baseline; gap: 8px; flex-shrink: 0; }
+    .app-name { font-size: 0.88rem; color: var(--teal); font-weight: 600; letter-spacing: 0.04em; }
+    .sep { color: var(--text-dimmer); }
+    #page-title { font-size: 0.8rem; color: var(--text-muted); }
+    .header-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+    .hdr-btn {
+      padding: 3px 11px; font-size: 0.75rem; background: var(--bg);
+      border: 1px solid var(--border2); border-radius: 3px; color: var(--text-muted);
+      cursor: pointer; white-space: nowrap;
+    }
+    .hdr-btn:hover:not(:disabled) { border-color: var(--teal); color: var(--teal); }
+    .hdr-btn:disabled { opacity: 0.4; cursor: default; }
+    .hdr-btn.primary {
+      background: var(--teal); color: var(--accent-text); border-color: var(--teal); font-weight: 600;
+    }
+    .hdr-btn.primary:hover:not(:disabled) { background: var(--accent-dark); border-color: var(--accent-dark); }
+    .back-btn {
+      background: none; border: none; cursor: pointer; color: var(--text-dim);
+      font-size: 0.8rem; padding: 0 2px;
+    }
+    .back-btn:hover { color: var(--text); }
+
+    /* ── Status bar ── */
+    #status-bar {
+      padding: 4px 14px; font-size: 0.73rem; color: var(--text-muted);
+      border-bottom: 1px solid var(--border2); flex-shrink: 0; min-height: 26px;
+      display: flex; align-items: center;
+    }
+
+    /* ── Two-pane ── */
+    .main-content {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ── Left pane ── */
+    .left-pane {
+      flex: 0 0 480px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-right: 1px solid var(--border2);
+    }
+
+    /* ── Legend (sticky) ── */
+    #legend-area {
+      flex-shrink: 0;
+      background: var(--bg3);
+      border-bottom: 1px solid var(--border2);
+      padding: 7px 12px 5px;
+    }
+
+    .legend-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 4px;
+    }
+    .legend-label { font-size: 0.67rem; color: var(--text-dim); flex-shrink: 0; }
+    .legend-seg {
+      display: flex;
+      align-items: center;
+      border-radius: 2px;
+      overflow: hidden;
+      height: 8px;
+    }
+    .legend-seg-sim  { flex: 72; }
+    .legend-seg-kw   { flex: 13; margin-left: 2px; }
+    .legend-seg-pri  { flex: 15; margin-left: 2px; }
+    .legend-fill { height: 100%; }
+    .l-teal  { background: var(--teal); }
+    .l-amber { background: var(--amber); }
+    .l-rose  { background: var(--rose); }
+    .l-slate { background: var(--slate); }
+
+    .legend-key-row {
+      display: flex; gap: 10px; flex-wrap: wrap;
+    }
+    .legend-key {
+      display: flex; align-items: center; gap: 3px;
+      font-size: 0.64rem; color: var(--text-dim);
+    }
+    .legend-dot {
+      width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+    }
+
+    .flag-legend-toggle {
+      background: none; border: none; cursor: pointer;
+      font-size: 0.65rem; color: var(--text-dimmer); padding: 2px 0 0;
+      text-align: left; display: block; width: 100%;
+    }
+    .flag-legend-toggle:hover { color: var(--text-muted); }
+
+    .quota-row {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      padding: 4px 0 2px; font-size: 0.62rem;
+    }
+    .quota-chip {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 3px; padding: 1px 5px;
+      color: var(--text-muted);
+    }
+    .quota-chip .qtype { color: var(--text-dim); font-weight: 600; }
+    .quota-chip .qfull { color: var(--teal); }
+    .quota-chip .qover { color: var(--rose); }
+
+    .flag-legend-body {
+      margin-top: 4px; display: none;
+    }
+    .flag-legend-body.open { display: block; }
+    .flag-legend-entry {
+      display: flex; gap: 8px; font-size: 0.65rem; color: var(--text-dim);
+      margin-bottom: 2px; line-height: 1.4;
+    }
+    .flag-legend-entry .fk { flex-shrink: 0; color: var(--text-muted); font-weight: 600; width: 140px; }
+
+    /* ── Chunks scroll ── */
+    #chunks-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 10px;
+    }
+
+    /* ── Tier ── */
+    .tier { margin-bottom: 6px; }
+    .tier-header {
+      display: flex; align-items: center; gap: 6px;
+      padding: 4px 6px; cursor: pointer; user-select: none;
+      border-radius: 3px;
+    }
+    .tier-header:hover { background: var(--bg2); }
+    .tier-chevron { font-size: 0.7rem; color: var(--text-dim); width: 10px; }
+    .tier-title { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+    .tier-count { font-size: 0.66rem; color: var(--text-dimmer); }
+    .tier-body { }
+    .tier-body.collapsed { display: none; }
+
+    .subgroup-label {
+      font-size: 0.65rem; color: var(--text-dimmer); padding: 3px 6px;
+      text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px;
+    }
+
+    /* ── Chunk card ── */
+    .chunk-card {
+      background: var(--bg2); border: 1px solid var(--border2);
+      border-radius: 4px; margin-bottom: 6px; overflow: hidden;
+      transition: border-color 0.1s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+    body[data-theme="warm"] .chunk-card { box-shadow: 0 1px 3px rgba(80,50,20,0.12); }
+    .chunk-card:hover { border-color: var(--border); }
+    .chunk-card.selected-card { border-left: 2px solid var(--teal); }
+    .chunk-card.candidate-card { border-left: 2px solid var(--text-dimmer); }
+    .chunk-card.dropped-card  { border-left: 2px solid var(--rose); opacity: 0.65; }
+    .chunk-card.disabled-card { border-left: 2px solid var(--text-dimmer); opacity: 0.45; }
+    .tier-hint { font-size: 0.6rem; color: var(--text-dimmer); font-style: italic; }
+    .chunk-card.drag-over { border-top: 2px solid var(--teal); }
+    .chunk-card.dragging  { opacity: 0.4; }
+
+    /* group label inside selected tier */
+    .sel-group-label {
+      font-size: 0.63rem; color: var(--text-dimmer); text-transform: uppercase;
+      letter-spacing: 0.08em; padding: 8px 0 3px 2px;
+    }
+    .sel-group-label:first-child { padding-top: 0; }
+
+    /* category view */
+    .cat-type-block { margin-bottom: 4px; }
+    .cat-type-header {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 8px; cursor: pointer; border-radius: 3px;
+      background: var(--bg3); border: 1px solid var(--border2);
+      margin-bottom: 3px; user-select: none;
+    }
+    .cat-type-header:hover { background: var(--bg2); }
+    .cat-chev { font-size: 0.7rem; color: var(--text-dimmer); width: 10px; }
+    .cat-type-name { font-size: 0.78rem; font-weight: 700; color: var(--text); flex: 1; }
+    .cat-type-chips { display: flex; gap: 4px; }
+    .cat-chip {
+      font-size: 0.6rem; border-radius: 2px; padding: 1px 5px; font-weight: 600;
+      border: 1px solid;
+    }
+    .cat-chip-sel  { color: var(--teal);  border-color: var(--teal);  background: #0d2d2a; }
+    .cat-chip-quot { color: var(--amber); border-color: var(--amber); background: #2d1f04; }
+    .cat-chip-thr  { color: var(--text-dimmer); border-color: var(--border2); }
+    .cat-type-body { padding-left: 4px; }
+    .cat-type-body.collapsed { display: none; }
+
+    .cat-sub-header {
+      display: flex; align-items: center; gap: 5px;
+      padding: 4px 6px 2px; cursor: pointer; user-select: none;
+    }
+    .cat-sub-header:hover .cat-sub-label { color: var(--text); }
+    .cat-sub-chev  { font-size: 0.62rem; color: var(--text-dimmer); width: 10px; }
+    .cat-sub-label { font-size: 0.66rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+    .cat-sub-body { }
+    .cat-sub-body.collapsed { display: none; }
+    .cat-sub-header-disabled .cat-sub-chev { color: var(--rose); }
+    .cat-sub-header-disabled .cat-sub-label { color: var(--rose); opacity: 0.75; }
+    .cat-sub-header-disabled:hover .cat-sub-label { color: var(--rose); opacity: 1; }
+
+    /* view toggle */
+    .view-toggle-row {
+      display: flex; gap: 4px; padding: 6px 0 2px;
+    }
+    .view-btn {
+      font-size: 0.67rem; padding: 2px 10px; border-radius: 3px; cursor: pointer;
+      background: var(--bg3); border: 1px solid var(--border2); color: var(--text-dim);
+    }
+    .view-btn.active { background: var(--bg4); border-color: var(--teal); color: var(--teal); }
+
+    .card-header {
+      display: flex; align-items: flex-start; gap: 8px;
+      padding: 8px 9px 5px; cursor: pointer;
+    }
+    .card-header:hover { background: var(--bg3); }
+
+    .card-drag {
+      font-size: 1rem; color: var(--text-dim); flex-shrink: 0;
+      cursor: grab; padding-top: 4px; user-select: none;
+      width: 1rem; text-align: center;
+    }
+    .card-drag:active { cursor: grabbing; }
+
+    .card-num {
+      font-size: 1.55rem; font-weight: 800; line-height: 1;
+      color: var(--text-dim); flex-shrink: 0; width: 2.2rem;
+      text-align: right; padding-top: 1px; letter-spacing: -1px;
+      user-select: none;
+    }
+
+    .card-header-main { flex: 1; min-width: 0; }
+
+    .card-title-row { margin-bottom: 3px; }
+    .card-title {
+      font-size: 0.92rem; font-weight: 700; color: var(--text);
+      line-height: 1.25; word-break: break-word;
+    }
+
+    .card-meta-row {
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    }
+    .card-toggle {
+      font-size: 0.62rem; border-radius: 2px; padding: 1px 5px;
+      flex-shrink: 0; white-space: nowrap; font-weight: 700;
+      border: 1px solid;
+    }
+    .toggle-on  { color: var(--teal);  border-color: var(--teal);  background: var(--teal-bg); }
+    .toggle-off { color: var(--text-dim); border-color: var(--border2); background: transparent; }
+
+    .card-type { font-size: 0.62rem; color: var(--text-dimmer); flex-shrink: 0; background: var(--bg4); border: 1px solid var(--border2); border-radius: 2px; padding: 1px 5px; }
+    .card-id   { font-size: 0.60rem; color: var(--text-dimmer); font-family: monospace; }
+    .card-wizard-link { font-size: 0.6rem; color: var(--text-dimmer); text-decoration: none; flex-shrink: 0; margin-left: auto; padding: 0 2px; }
+    .card-wizard-link:hover { color: var(--teal); }
+
+    .card-body { padding: 0 9px 8px; }
+
+    .card-content {
+      font-size: 0.73rem; color: var(--text-muted); line-height: 1.45;
+      margin-bottom: 6px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* ── Score bar ── */
+    .score-bar-wrap { margin-bottom: 4px; }
+    .score-bar {
+      display: flex; height: 6px; border-radius: 2px;
+      overflow: hidden; background: var(--bg4);
+      margin-bottom: 3px;
+      gap: 2px;
+    }
+    .seg {
+      display: flex; height: 100%;
+    }
+    .seg-sim  { flex: 72; }
+    .seg-kw   { flex: 13; }
+    .seg-pri  { flex: 15; }
+    .seg-fill { height: 100%; flex-shrink: 0; }
+    .seg-empty { flex: 1; background: var(--bg4); }
+
+    .score-vals {
+      font-size: 0.64rem; color: var(--text-dimmer); display: flex; gap: 10px;
+    }
+    .score-val-label { color: var(--text-dim); }
+
+    /* ── Flags ── */
+    .flags-row {
+      display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 4px;
+    }
+    .flag {
+      font-size: 0.63rem; border-radius: 2px; padding: 1px 5px;
+    }
+    .flag-good    { color: var(--teal);  background: var(--teal-bg);  }
+    .flag-warn    { color: var(--amber); background: var(--amber-bg); }
+    .flag-bad     { color: var(--rose);  background: var(--rose-bg);  }
+    .flag-cut     { color: var(--text-dim); background: var(--bg4); border: 1px solid var(--border2); }
+
+    /* ── Assessment ── */
+    .assessment-line {
+      font-size: 0.7rem; line-height: 1.4; margin-top: 4px;
+    }
+    .assessment-relevant { color: var(--teal); }
+    .assessment-weak     { color: var(--rose); }
+    .assessment-pending  { color: var(--text-dimmer); font-style: italic; }
+
+    /* ── Rewrite panel ── */
+    .rw-panel {
+      margin-top: 6px; border-top: 1px solid var(--border); padding-top: 4px;
+    }
+    .rw-header {
+      display: flex; align-items: center; gap: 6px;
+      cursor: pointer; user-select: none;
+      font-size: 0.68rem; color: var(--text-muted); padding: 2px 0;
+    }
+    .rw-header:hover { color: var(--text); }
+    .rw-badge {
+      font-size: 0.65rem; padding: 1px 5px; border-radius: 3px;
+      background: var(--bg3); border: 1px solid var(--border);
+    }
+    .rw-badge.accepted { background: var(--teal); color: #fff; border-color: var(--teal); }
+    .rw-badge.stale    { background: var(--bg3); color: var(--text-dimmer); }
+    .rw-body { margin-top: 5px; }
+    .rw-body.hidden { display: none; }
+    .rw-label { font-size: 0.62rem; font-weight: 600; text-transform: uppercase;
+                color: var(--text-dimmer); letter-spacing: 0.04em; margin-bottom: 2px; }
+    .rw-before { font-size: 0.7rem; color: var(--text-muted); text-decoration: line-through;
+                 line-height: 1.4; margin-bottom: 5px; }
+    .rw-after  { font-size: 0.7rem; color: var(--text); line-height: 1.4; margin-bottom: 6px; }
+    .rw-actions { display: flex; gap: 6px; }
+    .rw-accept-btn, .rw-reject-btn {
+      font-size: 0.68rem; padding: 2px 8px; border-radius: 3px; cursor: pointer;
+      border: 1px solid var(--border); background: var(--bg3); color: var(--text);
+    }
+    .rw-accept-btn:hover { background: var(--teal); color: #fff; border-color: var(--teal); }
+    .rw-reject-btn:hover { background: var(--rose); color: #fff; border-color: var(--rose); }
+
+    /* ── Right pane ── */
+    .right-pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-width: 0;
+    }
+    .pane-toolbar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 5px 10px; background: var(--bg3);
+      border-bottom: 1px solid var(--border2);
+      flex-shrink: 0; min-height: 32px;
+    }
+    .pane-label { font-size: 0.72rem; color: var(--text-dim); }
+
+    #resume-frame {
+      flex: 1; width: 100%; border: none; background: #fff;
+    }
+    #resume-placeholder {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      color: var(--text-dimmer); font-size: 0.8rem;
+    }
+
+    /* ── Summary synthesis modal ── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.65);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 100;
+    }
+    .modal-box {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 6px; padding: 18px; width: 680px; max-width: 96vw;
+      max-height: 80vh; display: flex; flex-direction: column; gap: 12px;
+    }
+    .modal-title { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+    .modal-cols  { display: flex; gap: 12px; flex: 1; overflow: hidden; }
+    .modal-col   { flex: 1; display: flex; flex-direction: column; gap: 5px; overflow: auto; }
+    .modal-col-label { font-size: 0.67rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; }
+    .modal-text  {
+      font-size: 0.78rem; line-height: 1.55; padding: 8px 10px;
+      background: var(--bg3); border: 1px solid var(--border2); border-radius: 3px;
+      flex: 1; overflow-y: auto; color: var(--text-muted);
+    }
+    .modal-text.proposed { color: var(--teal); border-color: var(--teal); background: var(--teal-bg); }
+    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+    .modal-btn {
+      padding: 5px 14px; font-size: 0.78rem; border-radius: 3px; cursor: pointer;
+      border: 1px solid var(--border2); background: var(--bg); color: var(--text-muted);
+    }
+    .modal-btn:hover { border-color: var(--border); color: var(--text); }
+    .modal-btn.approve {
+      background: var(--teal); color: #111; border-color: var(--teal); font-weight: 600;
+    }
+    .modal-btn.approve:hover { background: #0d9488; }
+
+    /* ── Job context editor ── */
+    #job-context-area {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg2);
+    }
+    .job-context-label {
+      font-size: 0.67rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .job-context-hint {
+      font-weight: 400;
+      color: var(--text-dimmer);
+      margin-left: 4px;
+    }
+    #job-preview-input {
+      width: 100%;
+      box-sizing: border-box;
+      background: var(--bg3);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 6px 8px;
+      font-size: 0.71rem;
+      font-family: inherit;
+      resize: vertical;
+      outline: none;
+    }
+    #job-preview-input:focus { border-color: var(--teal); }
+    .job-context-note {
+      font-size: 0.62rem;
+      color: var(--text-dimmer);
+      margin-top: 3px;
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-left">
+      <button class="back-btn" id="back-btn" title="Close">← Back</button>
+      <span class="sep">/</span>
+      <span class="app-name">jobfitcv</span>
+      <span class="sep">/</span>
+      <span id="page-title">Chunk Review</span>
+    </div>
+    <div class="header-actions">
+      <button class="hdr-btn" id="assess-btn">Assess Fit</button>
+      <button class="hdr-btn" id="rewrite-run-btn">Rewrite</button>
+      <button class="hdr-btn" id="synth-btn">Synthesize Summary</button>
+      <button class="hdr-btn" id="preview-btn">Preview</button>
+      <button class="hdr-btn primary" id="apply-btn" disabled>Apply Selection</button>
+      <span data-theme-picker></span>
+    </div>
+  </header>
+
+  <div id="status-bar">Initializing…</div>
+
+  <div class="main-content">
+
+    <!-- Left pane -->
+    <div class="left-pane">
+
+      <!-- Sticky legend -->
+      <div id="legend-area">
+        <div class="legend-bar-row">
+          <span class="legend-label">Score bar:</span>
+          <div class="legend-seg legend-seg-sim">
+            <div class="legend-fill l-teal" style="width:60%"></div>
+            <div class="legend-fill" style="width:40%;background:var(--bg4)"></div>
+          </div>
+          <span class="legend-label" style="font-size:0.61rem">Sim 72%</span>
+          <div class="legend-seg legend-seg-kw">
+            <div class="legend-fill l-amber" style="width:50%"></div>
+            <div class="legend-fill" style="width:50%;background:var(--bg4)"></div>
+          </div>
+          <span class="legend-label" style="font-size:0.61rem">Kw 13%</span>
+          <div class="legend-seg legend-seg-pri">
+            <div class="legend-fill l-slate" style="width:70%"></div>
+            <div class="legend-fill" style="width:30%;background:var(--bg4)"></div>
+          </div>
+          <span class="legend-label" style="font-size:0.61rem">Pri 15%</span>
+        </div>
+        <div class="legend-key-row">
+          <span class="legend-key"><span class="legend-dot" style="background:var(--teal)"></span>Strong (≥0.70)</span>
+          <span class="legend-key"><span class="legend-dot" style="background:var(--amber)"></span>Passing (0.56–0.69)</span>
+          <span class="legend-key"><span class="legend-dot" style="background:var(--rose)"></span>Weak (&lt;0.56)</span>
+          <span class="legend-key"><span class="legend-dot" style="background:var(--slate)"></span>Priority</span>
+        </div>
+        <div class="quota-row" id="quota-row"><!-- populated by JS --></div>
+        <button class="flag-legend-toggle" id="flag-legend-toggle">▶ What do the flags mean?</button>
+        <div class="flag-legend-body" id="flag-legend-body">
+          <div class="flag-legend-entry"><span class="fk">✓ strong signal</span><span>Similarity ≥ 0.70 — semantically close to this job</span></div>
+          <div class="flag-legend-entry"><span class="fk">⚠ marginal fit</span><span>Similarity ≤ 0.55 — low semantic relevance</span></div>
+          <div class="flag-legend-entry"><span class="fk">⚠ no keyword overlap</span><span>Zero matching tokens between chunk and job text</span></div>
+          <div class="flag-legend-entry"><span class="fk">⚠ low keyword overlap</span><span>1–2 matching tokens — weak terminology alignment</span></div>
+          <div class="flag-legend-entry"><span class="fk">⚠ priority carried</span><span>High priority compensating for low similarity</span></div>
+          <div class="flag-legend-entry"><span class="fk">cut — quota full</span><span>Passed threshold but type limit already reached</span></div>
+          <div class="flag-legend-entry"><span class="fk">cut — below threshold</span><span>Score did not reach MIN_SCORE for its type</span></div>
+        </div>
+      </div>
+
+      <!-- Thin resume warning -->
+      <div id="thin-resume-banner" class="hidden" style="background:var(--rose-bg,#2d0d0d);border-bottom:1px solid var(--rose,#f43f5e);padding:7px 12px;font-size:0.72rem;color:var(--rose,#f43f5e);">
+        ⚠ Severely lacking relevant content — this resume is missing significant experience or falls well below normal chunk counts. Review and consider whether it is suitable to submit.
+      </div>
+
+      <!-- Ollama context editor -->
+      <div id="job-context-area">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div class="job-context-label">
+            Job context for Assess Fit
+            <span class="job-context-hint">(editable — used as Ollama prompt context)</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <a id="jd-actual-btn" href="#" target="_blank" title="View full verbatim JD" style="font-size:0.72rem;color:var(--accent);text-decoration:none;border:1px solid var(--accent);border-radius:4px;padding:2px 7px;opacity:0.85;display:none;">Full JD ↗</a>
+            <button id="context-shrink-btn" title="Toggle context" style="background:none;border:none;cursor:pointer;font-size:0.72rem;color:var(--text-dim);padding:0 4px;line-height:1;">▾</button>
+          </div>
+        </div>
+        <div id="context-collapsible">
+          <textarea id="job-preview-input" rows="7" spellcheck="false" placeholder="Job preview will load here…"></textarea>
+          <div class="job-context-note">Editing this re-runs all chunks and bypasses the cached assessments.</div>
+        </div>
+      </div>
+
+      <!-- Tiers -->
+      <div id="chunks-scroll">
+
+        <div class="view-toggle-row">
+          <button class="view-btn active" id="view-btn-tier">Tier view</button>
+          <button class="view-btn" id="view-btn-cat">Category view</button>
+        </div>
+
+        <div class="tier" id="tier-selected">
+          <div class="tier-header" data-tier="selected">
+            <span class="tier-chevron" id="chev-selected">▾</span>
+            <span class="tier-title">Selected</span>
+            <span class="tier-count" id="cnt-selected"></span>
+          </div>
+          <div class="tier-body" id="body-selected"></div>
+        </div>
+
+        <div class="tier" id="tier-candidates">
+          <div class="tier-header" data-tier="candidates">
+            <span class="tier-chevron" id="chev-candidates">▾</span>
+            <span class="tier-title">Candidates</span>
+            <span class="tier-count" id="cnt-candidates"></span>
+          </div>
+          <div class="tier-body" id="body-candidates"></div>
+        </div>
+
+        <div class="tier" id="tier-dropped">
+          <div class="tier-header" data-tier="dropped">
+            <span class="tier-chevron" id="chev-dropped">▸</span>
+            <span class="tier-title">Dropped</span>
+            <span class="tier-count" id="cnt-dropped"></span>
+          </div>
+          <div class="tier-body collapsed" id="body-dropped"></div>
+        </div>
+
+        <div class="tier" id="tier-disabled">
+          <div class="tier-header" data-tier="disabled">
+            <span class="tier-chevron" id="chev-disabled">▸</span>
+            <span class="tier-title">Disabled</span>
+            <span class="tier-count" id="cnt-disabled"></span>
+            <span class="tier-hint">excluded from matching</span>
+          </div>
+          <div class="tier-body collapsed" id="body-disabled"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right pane -->
+    <div class="right-pane">
+      <div class="pane-toolbar">
+        <span class="pane-label" id="right-label">Resume preview — click Preview to load</span>
+      </div>
+      <div id="resume-placeholder">Click "Preview" to render the current selection</div>
+      <iframe id="resume-frame" title="Resume preview" class="hidden"></iframe>
+    </div>
+
+  </div>
+
+  <!-- Summary synthesis modal -->
+  <div id="synth-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-title">Synthesized Summary</div>
+      <div class="modal-cols">
+        <div class="modal-col">
+          <div class="modal-col-label">Current</div>
+          <div class="modal-text" id="synth-current"></div>
+        </div>
+        <div class="modal-col">
+          <div class="modal-col-label">Proposed</div>
+          <div class="modal-text proposed" id="synth-proposed"></div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn" id="synth-discard-btn">Discard</button>
+        <button class="modal-btn approve" id="synth-approve-btn">Approve — use proposed</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="theme-picker.js"></script>
+  <script src="chunk_review.js"></script>
+</body>
+</html>

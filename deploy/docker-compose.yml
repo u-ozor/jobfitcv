@@ -1,0 +1,50 @@
+services:
+  api:
+    # Dockerfile lives in this same deploy/ directory, but needs files from the
+    # repo root (requirements.txt, app/, templates/, scripts/) — so the build
+    # context is the parent directory, not deploy/ itself.
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    # Run `docker-compose build` to rebuild after Dockerfile or requirements change.
+
+    # Default: standard bridge networking + explicit port mapping. Works
+    # identically on Mac, Windows, and Linux — this is the actually-portable
+    # option and the one used for local dev, which is the common case.
+    ports:
+      - "8000:8000"
+
+    # Mount host directories into the container.
+    # Changes on either side are immediately visible to the other.
+    # data/ holds personal input files and jobs.db — lives outside the image
+    # so it persists across rebuilds and isn't baked into the artifact.
+    # outputs/ holds generated resume artifacts — same reasoning.
+    volumes:
+      - ./data:/app/data
+      - ./outputs:/app/outputs
+
+    # Load environment variables from .env at runtime.
+    # .env is gitignored — copy .env.example to .env and fill in values.
+    #
+    # If you're using the chunk-review "Assess Fit" feature (Ollama) with this
+    # bridge-network setup: OLLAMA_BASE_URL must point at the special
+    # host.docker.internal DNS name Docker provides for reaching the host
+    # machine from inside a bridge-mode container — not "localhost", which
+    # inside the container refers to the container itself.
+    #   OLLAMA_BASE_URL=http://host.docker.internal:11434
+    env_file: .env
+
+    # Restart the container automatically if it crashes.
+    # Stops on explicit `docker-compose down`.
+    restart: unless-stopped
+
+    # ── Deploying to EC2 / a real Linux host instead? ──────────────────────
+    # network_mode: host is available there and genuinely simpler — the
+    # container shares the host's actual network namespace, so `localhost`
+    # inside the container really is the host, and Ollama at
+    # `localhost:11434` (or any other host service) needs no special DNS
+    # name, no `ports:` mapping, no host.docker.internal.
+    # To switch: remove the `ports:` key above, add `network_mode: host`,
+    # and change OLLAMA_BASE_URL back to plain `localhost`. This only works
+    # on Linux — Mac/Windows Docker always runs inside a VM, so host
+    # networking there doesn't reach the real host the same way.
